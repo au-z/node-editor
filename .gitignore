@@ -1,0 +1,15 @@
+.DS_Store
+.vscode/
+
+node_modules/
+dist/
+test/unit/coverage
+test/e2e/reports
+
+.editorconfig
+.postcssrc.js
+
+selenium-debug.log
+npm-debug.log
+yarn-error.log
+

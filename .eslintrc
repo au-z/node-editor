@@ -1,0 +1,40 @@
+{
+  "root": true,
+  "env": {
+    "es6": true,
+    "node": true,
+    "jest": true
+  },
+  "parserOptions": {
+    "parser": "babel-eslint",
+    "sourceType": "module"
+  },
+  "plugins": [
+    "html",
+    "vue"
+  ],
+  "extends": [
+    "plugin:vue/base",
+    "eslint:recommended",
+    "google"
+  ],
+  "rules": {
+    "brace-style": ["error", "1tbs", {
+      "allowSingleLine": true
+    }],
+    "semi": "off",
+    "max-len": "off",
+    "no-console": "off",
+    "no-unused-vars": "warn",
+    "key-spacing": "off",
+    "linebreak-style": "off",
+    "object-curly-spacing": "off",
+    "switch-colon-spacing": "off",
+    "prefer-promise-reject-errors": "off",
+    "curly": "off",
+    "template-curly-spacing": "off",
+    "indent": "off",
+    "require-jsdoc": "off",
+    "eol-last": "off"
+  }
+}

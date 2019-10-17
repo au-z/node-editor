@@ -1,0 +1,51 @@
+$grid-unit = 12px
+
+$color-bg = #343537
+$color-dark-1 = lighten($color-bg, 16%)
+$color-grid = lighten($color-bg, 20%)
+
+$color-med = #acadae
+
+$color-light = #d4d7df
+
+$color-active = #A6ECE0
+
+$color-port-boolean = white
+$color-port-int = #Af89B6
+$color-port-float = darken($color-port-int, 20%)
+$color-port-vec2 = #A6ECE0
+$color-port-vec3 = darken($color-port-vec2, 20%)
+$color-port-vec4 = darken($color-port-vec3, 20%)
+$color-port-rgb = #FCAA67
+
+.port {
+	background: darken($color-bg, 30%)
+}
+
+.port.int {
+	background: $color-port-int
+}
+
+.port.float {
+	background: $color-port-float
+}
+
+.port.vec3 {
+	background: $color-port-vec3
+}
+
+.port.vec3 {
+	background: $color-port-vec3
+}
+
+.port.vec4 {
+	background: $color-port-vec4
+}
+
+.port.rgb {
+	background: $color-port-rgb
+}
+
+.port.number {
+	background: $color-port-int
+}

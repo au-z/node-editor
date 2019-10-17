@@ -1,0 +1,34 @@
+{
+	"presets": [
+		["@babel/preset-env", {
+			"useBuiltIns": "usage",
+			"corejs": 3,
+			"targets": {
+				"browsers": ["> 1%", "last 2 versions", "not ie < 10"]
+			}
+		}],
+		"@babel/typescript"
+	],
+	"plugins": [
+		"@babel/plugin-proposal-object-rest-spread",
+		"@babel/plugin-proposal-optional-chaining"
+	],
+	"env": {
+		"test": {
+			"presets": [
+				["@babel/preset-env", {
+					"targets": {
+						"useBuiltIns": "usage",
+						"corejs": 3,
+						"node": "current"
+					}
+				}],
+				"@babel/typescript"
+			],
+			"plugins": [
+				"@babel/plugin-proposal-object-rest-spread",
+				"@babel/plugin-proposal-optional-chaining"
+			]
+		}
+	}
+}

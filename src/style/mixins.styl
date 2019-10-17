@@ -1,0 +1,155 @@
+sqrt(x) {
+  return math(x, 'sqrt')
+}
+
+// SPACE
+flexXY(x, y) {
+  display: flex
+  justify-content: x
+  align-items: y ?= x
+}
+
+flexGutter(size) {
+  & > * {
+    margin-right: size
+    &:last-child {
+      margin-right: 0
+    }
+  }
+}
+
+absPos(t, r, b, l) {
+  position: absolute
+  top: t ?= auto
+  right: r ?= auto
+  bottom: b ?= auto
+  left: l ?= auto
+}
+
+// SHAPES
+wh(w, h = w) {
+  width: w
+  height: h
+}
+
+square(dim) {
+  width: dim
+  height: dim
+}
+
+circle(diameter) {
+  width: diameter
+  height: diameter
+  border-radius: diameter
+}
+
+hexCaret(r, d2, up) {
+  border-left: 0.5 * d2 solid transparent
+  border-right: 0.5 * d2 solid transparent
+  if up {
+    top: -0.5 * r
+    border-bottom: 0.5 * r solid transparent
+  } else {
+    bottom: -0.5 * r
+    border-top: 0.5 * r solid transparent
+  }
+}
+
+hex(r) {
+  d = 2 * r
+  d2 = sqrt(3) * r
+
+  wh(d2, r)
+  &::before, &::after {
+    content: ''
+    position: absolute
+  }
+  &::before {
+    hexCaret(r, d2, true)
+  }
+  &::after {
+    hexCaret(r, d2, false)
+  }
+}
+
+separator() {
+  position: relative
+  width: 100%
+  height: 2px
+  margin: 8px 0
+  &:after {
+    content: ''
+    position absolute
+    left: 5%
+    top: 0
+    width: 90%
+    height: 100%
+    background: $c-ghost
+  }
+}
+
+tipNumber($n, $fill = transparent, $border = true)
+  content: '' + $n
+  position: absolute
+  left: -10px
+  top: -10px
+  circle(14px)
+  if $border
+    border: 1px solid #ddd
+  background: $fill
+  text-align: center
+  line-height: 1em
+  font-size: 0.7em
+  font-weight: bold
+  color: #aaa
+
+// COLORS
+rgbRandom(min, max)
+  return floor(math(0, "random") * max + min)
+
+// DEPTH
+boxShadow(r = 0, g = 0, b = 0, z = 1, highlight = false) {
+  $bar-x = 2px * z
+  $bar-y = 12px * z
+  $bar-blur = 30px * z
+  $bar-spread = 4px * z
+  $bar-color = c1
+  $shadow-bar = $bar-x $bar-y $bar-blur $bar-spread rgba(r, g, b, 0.05)
+
+  $right-x = 3px * z
+  $right-y = 8px * z
+  $right-blur = 5px * z
+  $shadow-right = $right-x $right-y $right-blur rgba(r, g, b, 0.03)
+
+  $bottom-x = 2px * z
+  $bottom-y = 3px * z
+  $bottom-blur = 4px * z
+  $bottom-spread = -2px * z
+  $shadow-bottom = $bottom-x $bottom-y $bottom-blur $bottom-spread rgba(r, g, b, 0.08)
+
+  $drop-x = 0
+  $drop-y = 75px * z
+  $drop-blur = 70px * z
+  $drop-spread = -50px * z
+  $shadow-drop = $drop-x $drop-y $drop-blur $drop-spread rgba(r, g, b, 0.12)
+
+  $top-x = 0
+  $top-y = -5px * z
+  $top-blur = 5px * z
+  $top-spread = 0
+  $shadow-top = $top-x $top-y $top-blur $top-spread #fff
+
+  if(highlight) {
+    box-shadow: $shadow-bar, $shadow-right, $shadow-bottom, $shadow-drop, $shadow-top
+  } else {
+    box-shadow: $shadow-bar, $shadow-right, $shadow-bottom, $shadow-drop
+  }
+}
+
+//TYPOGRAPHY
+emphasizeText() {
+  font-family: 'SuperGroteska', sans-serif
+  text-transform: uppercase
+  letter-spacing: 0.14em
+  font-size: 0.85em
+}

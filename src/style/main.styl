@@ -1,0 +1,87 @@
+@require '~style/variables.styl'
+@require '~style/mixins.styl'
+
+html, body
+  margin: 0
+  padding: 0
+
+*, *::before, *::after
+  box-sizing: border-box
+
+.node {
+  absPos(0, auto, auto, 0)
+  border-bottom-left-radius: 3px
+  border-bottom-right-radius: 3px
+  flexXY(center, start)
+  flex-direction: column
+  &.selected {
+    & > div.header {
+      border: 1px solid $color-active
+      border-bottom: 1px solid $color-grid
+    }
+    & > div.content {
+      border: 1px solid $color-active
+      border-top: 1px solid transparent
+    }
+  }
+  & > div.content {
+    flex: 1
+    padding: 4px 8px
+    min-width: 5em
+    min-height: 3em
+    background: darken($color-grid, 16%)
+    border: 1px solid transparent
+  }
+}
+
+.node > div.header,
+.menu > div.header {
+  wh(100%, auto)
+  margin-top: -2em
+  padding: 4px 8px
+  border: 1px solid transparent
+  border-bottom: 1px solid $color-grid
+  border-top-left-radius: 3px
+  border-top-right-radius: 3px
+  font-size: 0.75em
+  font-family: 'Consolas', monospace
+  color: $color-med
+  background: rgba($color-grid, 0.50)
+}
+
+.node input {
+  circle(24px)
+  margin: 0 8px
+  padding: 0 10px
+  font-family 'Consolas', monospace
+  font-size: 1em
+  border: 2px solid transparent
+  background: lighten($color-bg, 5%)
+  color: $color-med
+  &[type=number]::-webkit-inner-spin-button,
+  &[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none
+    -moz-appearance: none
+    appearance: none
+    margin: 0
+  }
+}
+
+input, textarea {
+  -webkit-transition: all 0.30s ease-in-out
+  -moz-transition: all 0.30s ease-in-out
+  -ms-transition: all 0.30s ease-in-out
+  -o-transition: all 0.30s ease-in-out
+  outline: none
+  border: 2px solid
+}
+
+input:focus, textarea:focus {
+  border: 2px solid rgba($color-active, 1) !important
+}
+
+.menu {
+  & > div.header {
+
+  }
+}
