@@ -1,5 +1,5 @@
 <template>
-  <div :class="['menu add-node-menu', {show}]" v-keybind="keybind"
+  <div :class="['menu menu-add-node', {show}]" v-keybind="keybind"
     :style="{
       left: `${pos[0]}px`,
       top: `${pos[1]}px`,
@@ -7,20 +7,8 @@
     @click="show = false">
     <div class="header">Add</div>
     <div class="content">
-      <button @click="createNode('RGB Color', 'node-rgb')">
-        <i class="far fa-dot-circle"/>RGB Color
-      </button>
-      <button @click="createNode('Hue', 'node-hue')">
-        <i class="far fa-dot-circle"/>Hue
-      </button>
-      <button @click="createNode('Preview', 'node-out')">
-        <i class="far fa-dot-circle"/>Preview
-      </button>
-      <button @click="createNode('Slice', 'node-vec3-slice')">
-        <i class="far fa-dot-circle"/>Slice
-      </button>
-      <button @click="createNode('Combine', 'node-vec3-combine')">
-        <i class="far fa-dot-circle"/>Combine
+      <button v-for="t in $store.state.nodeTemplates" :key="t.is" @click="createNode(t.name, t.is)">
+        <i class="far fa-dot-circle"/>{{t.name}}
       </button>
     </div>
   </div>
@@ -31,7 +19,7 @@ import useMouse from './useMouse.ts'
 import Keybind from '../directives/v-keybind.ts'
 
 export default {
-  name: 'add-node-menu',
+  name: 'menu-add-node',
   directives: {Keybind},
   data: (vm) => ({
     show: false,
@@ -64,7 +52,7 @@ export default {
 @require '~style/variables.styl'
 @require '~style/mixins.styl'
 
-.add-node-menu {
+.menu-add-node {
   absPos(0, auto, auto, 0)
   min-width: 5em
   flexXY(center, center)

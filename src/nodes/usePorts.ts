@@ -1,18 +1,7 @@
 import Vue from 'vue'
 import {onMounted, onBeforeUpdate, computed, ref, watch, Ref, onUpdated} from '@vue/composition-api'
 import {Node} from './useNode'
-
-enum Datatype {
-  boolean,
-  int,
-  float,
-  string,
-  vec2,
-  vec3,
-  vec4,
-  color,
-  object,
-}
+import {Datatype, DatatypeProperties} from './Datatype'
 
 interface Port {
   name: string,
@@ -43,8 +32,19 @@ export default function usePorts(ctx, rNode: Ref<Node>) {
     })
   }
 
+  const clamp = (port, value) => {
+    if(DatatypeProperties[port.type].range && Array.isArray(value)) {
+      const range = DatatypeProperties[port.type].range
+      return value.map((num) => Math.max(range[0], Math.min(range[1], num)))
+    }
+  }
+
   watch(outputBindings, (outputBindings) => Object.keys(outputBindings).forEach((key) => {
-    ctx.root.$store.commit('port:set', {id: rNode.value.id, port: key, value: outputBindings[key]})
+    ctx.root.$store.commit('port:set', {
+      id: rNode.value.id,
+      port: key,
+      value: clamp(rNode.value.out[key], outputBindings[key]),
+    })
   }))
 
   onMounted(() => {

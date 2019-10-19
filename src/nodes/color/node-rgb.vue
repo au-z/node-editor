@@ -55,7 +55,6 @@ export default {
   .input {
     flexXY(start, center)
     margin: 2px 0
-    flex-wrap: nowrap
     input {
       width: 3.3em
     }

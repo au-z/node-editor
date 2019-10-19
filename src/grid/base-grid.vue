@@ -2,7 +2,7 @@
   <div class="base-grid">
     <node-toolbar/>
     <canvas ref="canvas" v-keybind="keybind" @click="() => $store.commit('node:selectAll', false)"></canvas>
-    <add-node-menu/>
+    <menu-add-node/>
     <slot></slot>
   </div>
 </template>
@@ -11,11 +11,11 @@
 import Canvas from './Canvas.js'
 import Keybind from '../directives/v-keybind.ts'
 import NodeToolbar from '../toolbar/node-toolbar.vue'
-import AddNodeMenu from '../interface/add-node-menu.vue'
+import MenuAddNode from '../interface/menu-add-node.vue'
 
 export default {
   name: 'base-grid',
-  components: {NodeToolbar, AddNodeMenu},
+  components: {NodeToolbar, MenuAddNode},
   directives: {Keybind},
   data: (vm) => ({
     canvas: null,
@@ -44,9 +44,6 @@ export default {
         }).filter(({from, to}) => !!from)
 
         edges.forEach(({from, to}) => this.canvas.bezier(from, to))
-        this.$store.getters.nodes.forEach((node) => {
-          this.$store.commit('node:clean', node.id)
-        })
       })
     },
     _absolutePortPos(nodePos, portPos) {
@@ -57,7 +54,10 @@ export default {
     this.canvas = Canvas.getInstance(this.$refs.canvas)
     this.canvas.prepare()
 
-    this.$watch('dirtyNodes', this.redraw)
+    this.$watch('dirtyNodes', (nodes) => {
+      nodes.forEach((n) => this.$store.commit('node:clean', n.id))
+      this.redraw()
+    })
     window.addEventListener('resize', this.redraw)
   },
 }

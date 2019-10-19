@@ -9,6 +9,12 @@ interface Edge {
   port: string
 }
 
+interface NodeTemplate {
+  type: string,
+  name: string,
+  is: string,
+}
+
 function insertAssign(obj, key, value) {
   if (obj[key]) {
     obj[key] = value
@@ -33,6 +39,7 @@ function Node(node) {
 
 export default new Vuex.Store({
   state: {
+    nodeTemplates: [] as NodeTemplate[],
     nodes: {},
     edges: {},
     cmd: {
@@ -74,6 +81,7 @@ export default new Vuex.Store({
     cmd: (state) => (type) => state.cmd[type],
   },
   mutations: {
+    'node:register': (state, template: NodeTemplate) => state.nodeTemplates.push(template),
     'node:create': (state, node) => {
       const n = Node(node)
       insertAssign(state.nodes, n.id, n)

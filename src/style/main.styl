@@ -49,7 +49,7 @@ html, body
   background: rgba($color-grid, 0.50)
 }
 
-.node input {
+.node input, select {
   circle(24px)
   margin: 0 8px
   padding: 0 10px
@@ -65,6 +65,10 @@ html, body
     appearance: none
     margin: 0
   }
+}
+
+.node select {
+  min-width: 100px
 }
 
 input, textarea {

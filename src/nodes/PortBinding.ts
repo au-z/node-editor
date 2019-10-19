@@ -24,7 +24,7 @@ function mapPropType(type: Datatype) {
 		case Datatype.vec2:
 		case Datatype.vec3:
 		case Datatype.vec4:
-		case Datatype.color:
+		case Datatype.rgb:
 			return Array
 		case Datatype.object:
 			return Object
