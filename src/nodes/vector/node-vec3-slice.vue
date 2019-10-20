@@ -4,7 +4,6 @@
 </template>
 
 <script>
-/* eslint-disable new-cap */
 import PortBinding from '../PortBinding'
 
 export default {

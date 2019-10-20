@@ -8,6 +8,7 @@ interface Port {
   type: Datatype,
   relativePos: [number, number],
   value: any,
+  connected: boolean,
 }
 
 export default function usePorts(ctx, rNode: Ref<Node>) {
@@ -15,7 +16,9 @@ export default function usePorts(ctx, rNode: Ref<Node>) {
   const inputs: Ref<Port[]> = computed(() => ctx.root.$store.getters.nodeInputs(rNode.value.id))
   const outputs: Ref<Port[]> = computed(() => Object.values(node.value.out))
   const inputBindings: Ref<Record<string, any>> = computed(() => inputs.value.reduce((acc, port) => {
-    Vue.set(acc, port.name, port.value)
+    if(port.value != null) {
+      Vue.set(acc, port.name, port.value)
+    }
     return acc
   }, {}))
   const outputBindings = ref({})
@@ -37,6 +40,7 @@ export default function usePorts(ctx, rNode: Ref<Node>) {
       const range = DatatypeProperties[port.type].range
       return value.map((num) => Math.max(range[0], Math.min(range[1], num)))
     }
+    return value
   }
 
   watch(outputBindings, (outputBindings) => Object.keys(outputBindings).forEach((key) => {

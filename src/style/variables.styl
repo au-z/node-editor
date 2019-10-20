@@ -8,7 +8,7 @@ $color-med = #acadae
 
 $color-light = #d4d7df
 
-$color-active = #A6ECE0
+$color-active = #8AD5BF
 
 $color-port-boolean = white
 $color-port-int = #Af89B6
@@ -17,6 +17,7 @@ $color-port-vec2 = #A6ECE0
 $color-port-vec3 = darken($color-port-vec2, 20%)
 $color-port-vec4 = darken($color-port-vec3, 20%)
 $color-port-rgb = #FCAA67
+$color-port-rgbchannel = lighten($color-port-rgb, 50%)
 
 .port {
 	background: darken($color-bg, 30%)
@@ -24,6 +25,10 @@ $color-port-rgb = #FCAA67
 
 .port.int {
 	background: $color-port-int
+}
+
+.port.rgbchannel {
+	background: $color-port-rgbchannel
 }
 
 .port.float {

@@ -1,44 +1,53 @@
 <template>
   <div class="node-rgb" :id="id" :ref="id">
-    <div class="input">
-      R <input type="number" min="0" max="255" v-model.number="color[0]"/>
+    <div class="input" :style="{opacity: connectedInputs.R ? 0 : 1}">
+      R <input type="number" min="0" max="255" v-model.number="form.R"/>
     </div>
-    <div class="input">
-      G <input type="number" min="0" max="255" v-model.number="color[1]"/>
+    <div class="input" :style="{opacity: connectedInputs.G ? 0 : 1}">
+      G <input type="number" min="0" max="255" v-model.number="form.G"/>
     </div>
-    <div class="input">
-      B <input type="number" min="0" max="255" v-model.number="color[2]"/>
+    <div class="input" :style="{opacity: connectedInputs.B ? 0 : 1}">
+      B <input type="number" min="0" max="255" v-model.number="form.B"/>
     </div>
   </div>
 </template>
 
 <script>
-/* eslint-disable new-cap */
 import PortBinding from '../PortBinding'
+import useNodeContext from '../useNodeContext.ts'
 
 export default {
   name: 'node-rgb',
   mixins: [PortBinding({
-    outputs: {color: {type: 'rgb', value: [255, 255, 255], binding: 'color'}},
+    inputs: {
+      R: {type: 'rgbchannel', default: 0},
+      G: {type: 'rgbchannel', default: 0},
+      B: {type: 'rgbchannel', default: 0},
+    },
+    outputs: {color: {type: 'rgb', binding: 'rgb'}},
   })],
   props: {
     id: String,
-    r: {
-      type: Number,
-      default: 255,
-    },
-    g: {
-      type: Number,
-      default: 255,
-    },
-    b: {
-      type: Number,
-      default: 255,
+    something: {
+      type: String,
+      default: 'wow',
     },
   },
-  data: (vm) => ({
-    color: [vm.r, vm.g, vm.b],
+  data: () => ({
+    form: {R: 0, G: 0, B: 0},
   }),
+  computed: {
+    rgb() {
+      return [this.R || this.form.R, this.G || this.form.G, this.B || this.form.B]
+    },
+  },
+  setup(props, ctx) {
+    const {connectedInputs} = useNodeContext(ctx, props)
+
+    return {
+      connectedInputs,
+    }
+  },
 }
 </script>
 

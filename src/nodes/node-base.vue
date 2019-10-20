@@ -35,12 +35,8 @@ export default {
   },
   data: (vm) => ({
     events: {
-      initInputs: (ports) => {
-        vm.$store.commit('node:initPorts', {id: vm.node.id, areInputs: true, ports})
-      },
-      initOutputs: (ports) => {
-        vm.$store.commit('node:initPorts', {id: vm.node.id, areInputs: false, ports})
-      },
+      initInputs: (ports) => vm.$store.commit('node:initPorts', {id: vm.node.id, areInputs: true, ports}),
+      initOutputs: (ports) => vm.$store.commit('node:initPorts', {id: vm.node.id, areInputs: false, ports}),
     },
   }),
   setup(props, ctx) {

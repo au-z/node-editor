@@ -1,6 +1,7 @@
 <template>
   <div class="node-toolbar">
-    <div class="tools">
+    <save-load/>
+    <!-- <div class="tools">
       <button class="nodes" @click="addNode" title="Add Node">
         <i class="fas fa-plus"></i>
       </button>
@@ -13,19 +14,18 @@
       <button class="nodes" title="Not Implemented">
         <i class="fas fa-unlock"></i>
       </button>
-    </div>
+    </div> -->
     <cmd-tool/>
-    <node-tool/>
   </div>
 </template>
 
 <script>
 import CmdTool from './cmd-tool.vue'
-import NodeTool from './node-tool.vue'
+import SaveLoad from '../storage/save-load.vue'
 
 export default {
   name: 'node-toolbar',
-  components: {CmdTool, NodeTool},
+  components: {CmdTool, SaveLoad},
   methods: {
     copyNodes() {
       const nodes = this.$store.getters.nodes.map((n) => ({name: n.name, pos: JSON.stringify(n.pos)}))
@@ -45,7 +45,7 @@ export default {
 .node-toolbar {
   absPos(0, auto, auto, 0)
   wh(100%, 40px)
-  flexXY(center, space-between)
+  flexXY(space-between, space-between)
   background: $color-grid
   .tools {
     flexXY(center, center)

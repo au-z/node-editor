@@ -1,8 +1,11 @@
-import {Datatype} from './usePorts'
+import {Datatype, Port} from './usePorts'
+import { DatatypeProperties } from './Datatype'
+import store from 'src/store'
 
 interface PortConfig {
 	type: Datatype
-	value: any
+	value?: any
+	default: any
 	binding: string
 }
 
@@ -18,6 +21,7 @@ function mapPropType(type: Datatype) {
 			return Boolean
 		case Datatype.int:
 		case Datatype.float:
+		case Datatype.rgbchannel:
 			return Number
 		case Datatype.string:
 			return String
@@ -43,21 +47,31 @@ export default function PortBinding(options: BindingOptions) {
 	let inputs = {}
 	let outputs = {}
 
-	let props = {}
+	let props = {
+		node: Object,
+	}
 
 	if(options.inputs) {
 		Object.entries(options.inputs).forEach(([name, config]) => {
-			inputs[name] = config
+			inputs[name] = {
+				...config,
+				relativePos: config.relativePos || [0, 0],
+			},
 			props[name] = {
 				type: mapPropType(config.type),
-				default: propDefault(config.value),
+				required: false,
+				default: propDefault(config.value || config.default),
 			}
 		})
 	}
 
 	if(options.outputs) {
 		Object.entries(options.outputs).forEach(([name, config]) => {
-			outputs[name] = config
+			// set default output datatype values
+			outputs[name] = {
+				...config,
+				value: (config.value !== undefined) ? config.value : DatatypeProperties[config.type].default,
+			}
 		})
 	}
 

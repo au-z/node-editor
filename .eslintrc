@@ -24,6 +24,7 @@
     }],
     "semi": "off",
     "max-len": "off",
+    "new-cap": "off",
     "no-console": "off",
     "no-unused-vars": "warn",
     "key-spacing": "off",

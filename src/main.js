@@ -6,6 +6,7 @@ import VueCompositionApi from '@vue/composition-api'
 Vue.use(VueCompositionApi)
 
 import store from 'src/store/index.ts'
+import router from 'src/router.ts'
 import App from './App.vue'
 
 import BaseGrid from './grid/base-grid.vue'
@@ -21,5 +22,6 @@ Vue.directive('draggable', Draggable)
 new Vue({
   el: '#app',
   store,
+  router,
   render: (h) => h(App),
 })

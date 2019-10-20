@@ -49,7 +49,11 @@ html, body
   background: rgba($color-grid, 0.50)
 }
 
-.node input, select {
+.node select {
+  min-width: 100px
+}
+
+input, select {
   circle(24px)
   margin: 0 8px
   padding: 0 10px
@@ -67,17 +71,12 @@ html, body
   }
 }
 
-.node select {
-  min-width: 100px
-}
-
 input, textarea {
   -webkit-transition: all 0.30s ease-in-out
   -moz-transition: all 0.30s ease-in-out
   -ms-transition: all 0.30s ease-in-out
   -o-transition: all 0.30s ease-in-out
   outline: none
-  border: 2px solid
 }
 
 input:focus, textarea:focus {

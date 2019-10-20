@@ -22,13 +22,22 @@ export default {
     keybind: {
       bindings: [
         {key: 'a', fn(e) {vm.$store.commit('node:selectAll')}},
-        {key: 'x', fn(e) {vm.$store.commit('node:deleteSelected')}},
+        {key: 'x', fn(e) {
+          vm.selectedNodeIds.forEach((id) => {
+            const edges = vm.$store.getters.edgesByNodeId(id)
+            vm.$store.commit('node:disconnect', edges)
+          })
+          vm.$store.commit('node:deleteSelected', vm.selectedNodeIds)
+        }},
       ],
     },
   }),
   computed: {
     dirtyNodes() {
       return this.$store.getters.dirtyNodes
+    },
+    selectedNodeIds() {
+      return this.$store.getters.selectedNodes.map((n) => n.id)
     },
   },
   methods: {
@@ -45,9 +54,6 @@ export default {
 
         edges.forEach(({from, to}) => this.canvas.bezier(from, to))
       })
-    },
-    _absolutePortPos(nodePos, portPos) {
-      return [nodePos[0] + portPos[0], nodePos[1] + portPos[1]]
     },
   },
   mounted() {

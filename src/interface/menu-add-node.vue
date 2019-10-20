@@ -57,7 +57,7 @@ export default {
   min-width: 5em
   flexXY(center, center)
   flex-direction column
-  boxShadow(26, 26, 30, 4)
+  boxShadow(26, 26, 30, 0.3)
   display: none
   z-index: 2
   &.show {
