@@ -33,6 +33,7 @@ export default function usePorts(ctx, nodeId: string) {
   })
 
   const positionPorts = (node: Node) => {
+    if (!node.el) return
     const bbox = node.el.getBoundingClientRect()
     inputs.value.forEach((port, i) => {
       store.commit('port:setRelativePos', {

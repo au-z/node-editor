@@ -8,7 +8,8 @@
     <div class="header">{{node.name}}</div>
     <node-ports :ports="inputs"
       :incoming="connectedInputs"
-      @connect="(port) => $store.commit('cmd:edge:create', {node: node.id, port, type: 'to'})"/>
+      @connect="(port) => $store.commit('cmd:edge:create', {node: node.id, port, type: 'to'})"
+      @disconnect="(port) => $store.commit('edge:disconnect', {node: node.id, port})"/>
 
     <div class="content">
       <component :is="node.type" :node="node"

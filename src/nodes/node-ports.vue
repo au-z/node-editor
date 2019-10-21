@@ -1,6 +1,6 @@
 <template>
   <div :class="['node-ports', {in: !out, out: out}]">
-    <div :class="['port', p.type]" v-for="p in ports" :key="p.name"
+    <div :class="['port', p.type, {connected: incoming[p.name]}]" v-for="p in ports" :key="p.name"
     :title="`${p.name}: ${p.value}`"
     :style="{
       top: `${p.relativePos[1] - 0.5 * port.D}px`,
@@ -8,7 +8,7 @@
       height: `${port.D}px`,
       borderRadius: `${port.D}px`,
     }"
-    @click="() => $emit('connect', p.name)">
+    @click="() => connect(p.name)">
     </div>
   </div>
 </template>
@@ -36,6 +36,15 @@ export default {
       D: 12,
     },
   }),
+  methods: {
+    connect(port) {
+      if (this.incoming[port]) {
+        this.$emit('disconnect', port)
+      } else {
+        this.$emit('connect', port)
+      }
+    },
+  },
 }
 </script>
 
@@ -61,6 +70,20 @@ export default {
     position: absolute
     border: 3px solid $color-bg
     cursor: pointer
+    &.connected {
+      &:hover::before {
+        // content: '\f00d'
+        content: "\f00d"
+        font-family: "Font Awesome 5 Free"
+        font-weight: 900
+        font-size: 50%
+        padding: 3px 4px
+        absPos(-4px, 0, 0, -4px)
+        circle(calc(100% + 8px))
+        background: #E54040
+        color: white
+      }
+    }
   }
 }
 </style>

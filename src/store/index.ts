@@ -143,6 +143,10 @@ export default new Vuex.Store({
       state.cmd.edge.from = null
       state.cmd.edge.to = null
     },
+    'edge:disconnect': (state, {node, port}) => {
+      Vue.delete(state.edges, `${node}.${port}`)
+      state.nodes[node].dirty = true
+    },
 
     'cmd:edge:create': (state, {node, port, type}) => {
       state.cmd.edge[type] = {node, port}
