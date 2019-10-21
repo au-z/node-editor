@@ -1,25 +1,38 @@
 <template>
-  <div class="node-value">
+  <div class="node-value" v-preserve="value">
     <div class="input">
-      <input type="number" step="0.01" v-model.number="out.value">
+      <input type="number" step="0.01" v-model.number="value">
     </div>
   </div>
 </template>
 
 <script>
-/* eslint-disable */
 import PortBinding from '../PortBinding.ts'
+import Preserve from '../../directives/v-preserve.ts'
+import useLocalStorage from '../../storage/useLocalStorage.ts'
 
 export default {
   name: 'node-value',
+  directives: {Preserve},
   mixins: [PortBinding({
-    outputs: {val: {type: 'float', value: 0.500, binding: 'out.value'}},
+  outputs: {val: {type: 'float', binding: 'value'}},
   })],
-  data: () => ({
-    out: {
-      value: 0.500,
-    },
+  data: (vm) => ({
+    value: 0.500,
   }),
+  setup(props, ctx) {
+    const {nodeState} = useLocalStorage.getInstance(ctx)
+
+    return {
+      nodeState,
+    }
+  },
+  created() {
+    const saveState = this.nodeState(this.node.id)
+    if (saveState.value.value) {
+      this.value = saveState.value.value
+    }
+  },
 }
 </script>
 

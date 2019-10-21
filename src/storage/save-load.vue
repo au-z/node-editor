@@ -16,7 +16,7 @@ import useLocalStorage from './useLocalStorage.ts'
 export default {
   name: 'save-load',
   setup(props, ctx) {
-    const {saveState, saveProgress, loadFromToken} = useLocalStorage(ctx)
+    const {saveState, saveProgress, loadFromToken} = useLocalStorage.getInstance(ctx)
 
     return {
       saveState,

@@ -55,7 +55,7 @@ export default function PortBinding(options: BindingOptions) {
 		Object.entries(options.inputs).forEach(([name, config]) => {
 			inputs[name] = {
 				...config,
-				relativePos: config.relativePos || [0, 0],
+				relativePos: config.relativePos,
 			},
 			props[name] = {
 				type: mapPropType(config.type),

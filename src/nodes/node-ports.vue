@@ -22,6 +22,10 @@ export default {
       required: true,
       default: () => [],
     },
+    incoming: {
+      type: Object,
+      default: () => ({}),
+    },
     out: {
       type: Boolean,
       default: false,

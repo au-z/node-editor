@@ -7,10 +7,14 @@
     @click="$store.commit('node:select', node.id)">
     <div class="header">{{node.name}}</div>
     <node-ports :ports="inputs"
+      :incoming="connectedInputs"
       @connect="(port) => $store.commit('cmd:edge:create', {node: node.id, port, type: 'to'})"/>
 
     <div class="content">
-      <component :is="node.type" v-bind="inputBindings" v-model="outputBindings" v-on="events" :node="node"/>
+      <component :is="node.type" :node="node"
+        v-bind="inputBindings"
+        v-model="outputBindings"
+        v-on="events"/>
     </div>
 
     <node-ports :ports="outputs" out
@@ -41,10 +45,11 @@ export default {
   }),
   setup(props, ctx) {
     const {rNode, onPositionChange, deleteNode} = useNode(ctx, props.id)
-    const {inputs, inputBindings, outputBindings, outputs} = usePorts(ctx, rNode)
+    const {inputs, inputBindings, outputBindings, outputs, connectedInputs} = usePorts(ctx, rNode.value.id)
 
     return {
       node: rNode.value,
+      connectedInputs,
       onPositionChange,
       deleteNode,
       inputs,

@@ -34,6 +34,7 @@ function Node(node) {
     out: node.out ? node.out.map((port) => ({...port, value: null})) : {},
     dirty: false,
     selected: false,
+    state: {},
   }
 }
 
@@ -90,10 +91,10 @@ export default new Vuex.Store({
   mutations: {
     'node:register': (state, template: NodeTemplate) => state.nodeTemplates.push(template),
     'node:create': (state, node) => {
-      console.log('creating node', node)
       const n = Node(node)
       insertAssign(state.nodes, n.id, n)
     },
+    'node:persistState': (state, {id, key, value}) => Vue.set(state.nodes[id].state, key, value),
     'node:setPosition': (state, {id, pos}) => {
       state.nodes[id].pos = pos
       state.nodes[id].dirty = true
@@ -121,8 +122,10 @@ export default new Vuex.Store({
     'node:disconnect': (state, edges) => edges.forEach((e) => Vue.delete(state.edges, e)),
     'node:deleteSelected': (state, nodeIds) => nodeIds.forEach((id) => Vue.delete(state.nodes, id)),
 
+    'port:setRelativePos': (state, {id, port, pos, isInput}) => state.nodes[id][isInput ? 'in' : 'out'][port].relativePos = pos,
     'port:set': (state, {id, port, value}) => state.nodes[id].out[port].value = value,
 
+    'edges:import': (state, edges) => state.edges = edges,
     'edge:connect': (state, {from, to}) => {
       const edgeId = `${to.node}.${to.port}`
       if (state.edges[edgeId]) {

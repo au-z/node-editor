@@ -1,5 +1,5 @@
 <template>
-  <div class="node-rgb" :id="id" :ref="id">
+  <div class="node-rgb" :id="id" :ref="id" v-preserve="form">
     <div class="input" :style="{opacity: connectedInputs.R ? 0 : 1}">
       R <input type="number" min="0" max="255" v-model.number="form.R"/>
     </div>
@@ -14,13 +14,16 @@
 
 <script>
 import PortBinding from '../PortBinding'
-import useNodeContext from '../useNodeContext.ts'
+import usePorts from '../usePorts.ts'
+import Preserve from '../../directives/v-preserve.ts'
+import useLocalStorage from '../../storage/useLocalStorage.ts'
 
 export default {
   name: 'node-rgb',
+  directives: {Preserve},
   mixins: [PortBinding({
     inputs: {
-      R: {type: 'rgbchannel', default: 0},
+    R: {type: 'rgbchannel', default: 0},
       G: {type: 'rgbchannel', default: 0},
       B: {type: 'rgbchannel', default: 0},
     },
@@ -42,10 +45,18 @@ export default {
     },
   },
   setup(props, ctx) {
-    const {connectedInputs} = useNodeContext(ctx, props)
+    const {connectedInputs} = usePorts(ctx, props.node.id)
+    const {nodeState} = useLocalStorage.getInstance(ctx)
 
     return {
       connectedInputs,
+      nodeState,
+    }
+  },
+  created() {
+    const saveState = this.nodeState(this.node.id)
+    if (saveState.value.form) {
+      this.form = saveState.value.form
     }
   },
 }

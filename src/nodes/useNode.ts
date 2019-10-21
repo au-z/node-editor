@@ -1,4 +1,4 @@
-import {ref, onMounted, Ref} from '@vue/composition-api'
+import {ref, onMounted, Ref, computed} from '@vue/composition-api'
 import {Port} from './usePorts'
 
 interface Node {
@@ -15,19 +15,20 @@ interface Node {
   }
 }
 
-export default function useNode(ctx, nodeId, portState) {
-  const rNode: Ref<Node> = ref(ctx.root.$store.state.nodes[nodeId])
+export default function useNode(ctx, nodeId) {
+  const store: any = ctx.root.$store
+  const rNode: Ref<Node> = ref(store.state.nodes[nodeId])
 
   const onPositionChange = (diff, pos, e) => {
     if(!pos || !e) return
-    ctx.root.$store.commit('node:setPosition', {id: rNode.value.id, pos: [pos.left, pos.top]})
+    store.commit('node:setPosition', {id: rNode.value.id, pos: [pos.left, pos.top]})
   }
 
-  onMounted(() => {
-    ctx.root.$store.commit('node:attachElement', {id: rNode.value.id, el: ctx.refs.el})
-  })
+  const deleteNode = (nodeId) => store.commit('node:delete', nodeId)
 
-  const deleteNode = (nodeId) => ctx.root.$store.commit('node:delete', nodeId)
+  onMounted(() => {
+    store.commit('node:attachElement', {id: rNode.value.id, el: ctx.refs.el})
+  })
 
   return {
     rNode,

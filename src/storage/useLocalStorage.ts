@@ -1,8 +1,9 @@
 import md5 from 'blueimp-md5'
-import { computed, reactive } from '@vue/composition-api'
+import { computed, reactive, ref } from '@vue/composition-api'
 
 interface EditorState {
 	nodes: any[],
+	edges: Object,
 }
 
 const ls = (() => {
@@ -29,19 +30,41 @@ const ls = (() => {
 	}
 })()
 
-export default function useLocalStorage(ctx) {
-	const nodes = computed(() => ctx.root.$store.getters.nodes)
-	const edges = computed(() => ctx.root.$store.state.edges)
+export default (function useLocalStorage() {
+	let instance: any = null
 
-	const saveState = reactive({
-		token: null as string | null,
-	})
+	let ctx: any = null
+	let store: any = null
+	let nodes: any = null
+	let edges: any = null
+	let saveState: any = null
+
+	const init = (_ctx) => {
+		ctx = _ctx
+		store = ctx.root.$store
+		nodes = computed(() => store.getters.nodes)
+		edges = computed(() => store.state.edges)
+
+		saveState = reactive({
+			token: null as string | null,
+			state: null as any,
+		})
+
+		instance = {
+			saveProgress,
+			loadFromToken,
+			nodeState,
+			saveState,
+		}
+
+		return instance
+	}
 
 	const saveProgress = () => {
 		if(!nodes) return console.warn('Nothing to save.')
-		console.log(nodes.value)
 		saveState.token = ls.set({
 			nodes: nodes.value.map((node) => ({...node, el: null})),
+			edges: edges.value,
 		}, saveState.token)
 	}
 
@@ -49,14 +72,20 @@ export default function useLocalStorage(ctx) {
 		const data: EditorState = ls.get(token)
 		if(!data) return console.error('Node editor state not found.')
 
-		data.nodes.forEach((n) => ctx.root.$store.commit('node:create', {type: n.type, name: n.name, pos: n.pos}))
-
+		data.nodes.forEach((n) => store.commit('node:create', {type: n.type, id: n.id, name: n.name, pos: n.pos}))
+		if(data.edges) {
+			store.commit('edges:import', data.edges)
+		}
+		saveState.state = data
 		saveState.token = token
 	}
 
+	const nodeState = (id): Ref<any> => computed(() => {
+		const storedNode = saveState?.state?.nodes.find((n) => n.id === id);
+		return (storedNode) ? storedNode.state : ref(null)
+	})
+
 	return {
-		saveProgress,
-		loadFromToken,
-		saveState,
+		getInstance: (_ctx) => instance ? instance : init(_ctx)
 	}
-}
+})()
