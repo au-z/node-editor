@@ -3,6 +3,9 @@ import Vue from 'vue'
 export default function NodeRegistrar(store: any) {
   registerNode([
     {type: 'input', node: require('./input/node-value').default},
+
+    {type: 'data', node: require('./data/node-data').default},
+
     {type: 'color', node: require('./color/node-rgb').default},
     {type: 'color', node: require('./color/node-hue').default},
     {type: 'color', node: require('./math/node-blend').default},
