@@ -42,7 +42,7 @@ export default {
 
 .node-value{
   input {
-    min-width: 5em
+    max-width: 5em
   }
 }
 </style>

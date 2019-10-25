@@ -1,37 +1,28 @@
 <template>
   <div class="node-out">
-    <div class="preview" :style="{backgroundColor: hexColor}"></div>
-    <span>{{hexColor}}</span>
+    <div class="preview" :style="{background: hex}"></div>
+    <span>{{hex}}</span>
   </div>
 </template>
 
 <script>
-import PortBinding from '../PortBinding'
+import PortBinding from '../PortBinding.ts'
+import useColorProperties from './useColorProperties.ts'
 
 export default {
   name: 'node-out',
   mixins: [PortBinding({
     inputs: {color: {type: 'rgb', value: [0, 0, 0]}},
   })],
-  props: {
-    color: {
-      type: Array,
-      default: () => [0, 0, 0],
-    },
-  },
   computed: {
-    hexColor() {
-      return this.rgbToHex(this.color)
-    },
+    hex() {return this.rgb_hex(this.color)},
   },
-  methods: {
-    rgbToHex(rgb) {
-      return Object.values(rgb).reduce((color, channel) => {
-        let hex = channel.toString(16)
-        if (hex.length < 2) hex = '0' + hex
-        return color + hex
-      }, '#')
-    },
+  setup(props, ctx) {
+    const {rgb_hex} = useColorProperties()
+
+    return {
+      rgb_hex,
+    }
   },
 }
 </script>

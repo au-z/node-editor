@@ -7,6 +7,7 @@ export default function NodeRegistrar(store: any) {
     {type: 'data', node: require('./data/node-data').default},
 
     {type: 'color', node: require('./color/node-rgb').default},
+    {type: 'color', node: require('./color/node-hsl').default},
     {type: 'color', node: require('./color/node-hue').default},
     {type: 'color', node: require('./math/node-blend').default},
     {type: 'color', node: require('./color/node-out').default},

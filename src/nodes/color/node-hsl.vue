@@ -1,14 +1,14 @@
 <template>
-  <div class="node-rgb" :id="id" :ref="id" v-preserve="form">
+  <div class="node-hsl" :id="id" :ref="id" v-preserve="form">
     <color-preview :hex="rgb_hex(rgb)"/>
-    <div class="input" :style="{opacity: connectedInputs.R ? 0 : 1}">
-      R <input type="number" min="0" max="255" v-model.number="form.R"/>
+    <div class="input" :style="{opacity: connectedInputs.H ? 0 : 1}">
+      H <input type="number" min="0" max="360" v-model.number="form.H" v-input.wrap="wrapHue"/>
     </div>
-    <div class="input" :style="{opacity: connectedInputs.G ? 0 : 1}">
-      G <input type="number" min="0" max="255" v-model.number="form.G"/>
+    <div class="input" :style="{opacity: connectedInputs.S ? 0 : 1}">
+      S <input type="number" min="0" max="100" v-model.number="form.S"/>
     </div>
-    <div class="input" :style="{opacity: connectedInputs.B ? 0 : 1}">
-      B <input type="number" min="0" max="255" v-model.number="form.B"/>
+    <div class="input" :style="{opacity: connectedInputs.L ? 0 : 1}">
+      L <input type="number" min="0" max="100" v-model.number="form.L"/>
     </div>
   </div>
 </template>
@@ -18,19 +18,19 @@ import ColorPreview from './color-preview.vue'
 
 import PortBinding from '../PortBinding'
 import usePorts from '../usePorts.ts'
+import useColorProperties from './useColorProperties.ts'
 import Preserve from '../../directives/v-preserve.ts'
 import useLocalStorage from '../../storage/useLocalStorage.ts'
-import useColorProperties from './useColorProperties.ts'
 
 export default {
-  name: 'node-rgb',
+  name: 'node-hsl',
   components: {ColorPreview},
   directives: {Preserve},
   mixins: [PortBinding({
     inputs: {
-      R: {type: 'rgbchannel', default: 0},
-      G: {type: 'rgbchannel', default: 0},
-      B: {type: 'rgbchannel', default: 0},
+      H: {type: 'number', default: 20},
+      S: {type: 'number', default: 100},
+      L: {type: 'number', default: 50},
     },
     outputs: {color: {type: 'rgb', binding: 'rgb'}},
   })],
@@ -38,25 +38,27 @@ export default {
     id: String,
   },
   data: () => ({
-    form: {R: 0, G: 0, B: 0},
+    form: {H: 20, S: 100, L: 50},
   }),
   computed: {
+    wrapHue() {return {value: this.form.H, range: [0, 360]}},
     rgb() {
-      return [
-        this.connectedInputs.R ? this.R : this.form.R,
-        this.connectedInputs.G ? this.G : this.form.G,
-        this.connectedInputs.B ? this.B : this.form.B,
-      ]
+      return this.hsl_rgb(
+        (this.connectedInputs.H ? this.H : this.form.H) / 360,
+        (this.connectedInputs.S ? this.S : this.form.S) / 100,
+        (this.connectedInputs.L ? this.L : this.form.L) / 100,
+      )
     },
   },
   setup(props, ctx) {
     const {connectedInputs} = usePorts(ctx, props.node.id)
+    const {hsl_rgb, rgb_hex} = useColorProperties()
     const {nodeState} = useLocalStorage.getInstance(ctx)
-    const {rgb_hex} = useColorProperties()
 
     return {
       connectedInputs,
       nodeState,
+      hsl_rgb,
       rgb_hex,
     }
   },
@@ -73,7 +75,7 @@ export default {
 @require '~style/variables.styl'
 @require '~style/mixins.styl'
 
-.node-rgb{
+.node-hsl {
   padding: 2px
   flexXY(center, center)
   flex-direction: column

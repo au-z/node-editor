@@ -22,6 +22,7 @@
     "brace-style": ["error", "1tbs", {
       "allowSingleLine": true
     }],
+    "camelcase": "off",
     "semi": "off",
     "max-len": "off",
     "new-cap": "off",
