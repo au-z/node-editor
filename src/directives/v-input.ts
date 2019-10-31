@@ -2,10 +2,10 @@ export default (function() {
 	const boundInputs = {}
 
 	const wrap = (el, binding, range) => {
-		if(binding.oldValue.value <= binding.value.value && binding.value.value === range[1]) {
+		if(binding.oldValue.value <= binding.value.value && binding.value.value >= range[1]) {
 			el.value = range[0]
-		} else if (binding.oldValue.value >= binding.value.value && binding.value.value === range[0]) {
-			el.value = range[1]
+		} else if (binding.oldValue.value >= binding.value.value && binding.value.value < range[0]) {
+			el.value = range[1] - 1
 		}
 	}
 

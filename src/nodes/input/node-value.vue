@@ -40,7 +40,7 @@ export default {
 @require '~style/variables.styl'
 @require '~style/mixins.styl'
 
-.node-value{
+.node-value {
   input {
     max-width: 5em
   }

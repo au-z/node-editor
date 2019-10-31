@@ -9,7 +9,7 @@ export default function useColorProperties() {
 		return p
 	}
 
-	const hsl_rgb = (h, s, l) => {
+	const hsl_rgb = ([h, s, l]) => {
 		let rgb: [number, number, number] = [0, 0, 0]
 		if (s === 0) {
 			rgb = [1, 1, 1]
@@ -22,14 +22,44 @@ export default function useColorProperties() {
 		return rgb.map((c) => Math.round(c * 255))
 	}
 
+	const rgb_hsl = ([r, g, b]) => {
+		r /= 255; g /= 255; b /= 255;
+		const max = Math.max(r, g, b)
+		const min = Math.min(r, g, b)
+		let h, s, l = (max + min) / 2
+
+		if(max === min) {
+			h = s = 0
+		} else {
+			const d = max - min
+			s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+			switch(max) {
+				case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+				case g: h = (b - r) / d + 2; break;
+				case b: h = (r - g) / d + 4; break;
+			}
+			h /= 6
+		}
+
+		return [h, s, l]
+	}
+
 	const rgb_hex = (rgb) => rgb.reduce((color, channel) => {
 		let hex = channel.toString(16)
 		if (hex.length < 2) hex = '0' + hex
 		return color + hex
 	}, '#')
 
+	const hue = ([h, s, l], additive) => {
+		let hue = h + additive
+		hue = (hue > 1) ? hue - 1 : (hue < 0) ? 1 - hue : hue
+		return [hue, s, l]
+	}
+
 	return {
 		hsl_rgb,
+		rgb_hsl,
 		rgb_hex,
+		hue,
 	}
 }

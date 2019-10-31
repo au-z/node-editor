@@ -66,6 +66,9 @@ export default {
     })
     window.addEventListener('resize', this.redraw)
   },
+  updated() {
+    this.redraw()
+  },
 }
 </script>
 

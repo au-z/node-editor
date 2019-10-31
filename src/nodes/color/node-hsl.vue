@@ -2,7 +2,7 @@
   <div class="node-hsl" :id="id" :ref="id" v-preserve="form">
     <color-preview :hex="rgb_hex(rgb)"/>
     <div class="input" :style="{opacity: connectedInputs.H ? 0 : 1}">
-      H <input type="number" min="0" max="360" v-model.number="form.H" v-input.wrap="wrapHue"/>
+      H <input type="number" v-model.number="form.H" v-input.wrap="wrapHue"/>
     </div>
     <div class="input" :style="{opacity: connectedInputs.S ? 0 : 1}">
       S <input type="number" min="0" max="100" v-model.number="form.S"/>
@@ -43,11 +43,11 @@ export default {
   computed: {
     wrapHue() {return {value: this.form.H, range: [0, 360]}},
     rgb() {
-      return this.hsl_rgb(
+      return this.hsl_rgb([
         (this.connectedInputs.H ? this.H : this.form.H) / 360,
         (this.connectedInputs.S ? this.S : this.form.S) / 100,
         (this.connectedInputs.L ? this.L : this.form.L) / 100,
-      )
+      ])
     },
   },
   setup(props, ctx) {
@@ -79,8 +79,6 @@ export default {
   padding: 2px
   flexXY(center, center)
   flex-direction: column
-  color: $color-med
-  font-family 'Consolas', monospace
   .input {
     flexXY(start, center)
     margin: 2px 0

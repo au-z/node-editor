@@ -1,5 +1,5 @@
 <template>
-  <div :class="['node node-base', {selected: node.selected}]" ref="el" v-draggable="{onPositionChange}"
+  <div :class="['node ne-node', {selected: node.selected}]" ref="el" v-draggable="{onPositionChange}"
     :style="{
       left: `${node.pos[0]}px`,
       top: `${node.pos[1]}px`,
@@ -30,7 +30,7 @@ import Keybind from '../directives/v-keybind.ts'
 import NodePorts from './node-ports.vue'
 
 export default {
-  name: 'node-base',
+  name: 'ne-node',
   components: {NodePorts},
   props: {
     id: {

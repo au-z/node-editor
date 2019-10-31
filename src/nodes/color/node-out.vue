@@ -34,8 +34,6 @@ export default {
 .node-out {
   flexXY(center, center)
   flex-direction: column
-  color: $color-med
-  font-family: 'Consolas', monospace
 }
 .preview{
   square(60px)

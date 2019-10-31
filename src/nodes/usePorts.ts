@@ -64,7 +64,7 @@ export default function usePorts(ctx, nodeId: string) {
   }
 
   watch(outputBindings, (outputBindings) => Object.keys(outputBindings).forEach((key) => {
-    store.commit('port:set', {
+    rNode.value.out[key] && store.commit('port:set', {
       id: rNode.value.id,
       port: key,
       value: clamp(rNode.value.out[key], outputBindings[key]),
