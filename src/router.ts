@@ -5,8 +5,8 @@ Vue.use(VueRouter)
 import NodeEditor from './node-editor.vue'
 
 export default new VueRouter({
-	mode: 'history',
-	routes: [
-		{path: '*', name: 'node-editor', component: NodeEditor},
-	],
+  mode: 'history',
+  routes: [
+    {path: '*', name: 'node-editor', component: NodeEditor},
+  ],
 })

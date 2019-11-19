@@ -15,7 +15,7 @@ export default {
   name: 'node-value',
   directives: {Preserve},
   mixins: [PortBinding({
-  outputs: {val: {type: 'float', binding: 'value'}},
+    outputs: {val: {type: 'float', binding: 'value'}},
   })],
   data: (vm) => ({
     value: 0.500,

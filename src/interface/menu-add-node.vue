@@ -7,14 +7,22 @@
     @click="show = false">
     <div class="header">Add</div>
     <div class="content">
-      <button v-for="t in $store.state.nodeTemplates" :key="t.is" @click="createNode(t.name, t.is)">
-        <i class="far fa-dot-circle"/>{{t.name}}
-      </button>
+      <ul>
+        <li v-for="(nodes, type) of nodeTypes" :key="type" @mouseover="showSubMenu(type)">{{type}}
+          <div class="submenu nodes" v-show="submenuShow[type]">
+            <button v-for="n in nodes" :key="n.is" @click="createNode(n.name, n.is)">
+              <i class="far fa-dot-circle"/>{{n.name}}
+            </button>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
 
 <script>
+import Vue from 'vue'
+import {groupBy} from 'lodash'
 import useMouse from './useMouse.ts'
 import Keybind from '../directives/v-keybind.ts'
 
@@ -22,6 +30,7 @@ export default {
   name: 'menu-add-node',
   directives: {Keybind},
   data: (vm) => ({
+    submenuShow: {},
     show: false,
     pos: [400, 400],
     keybind: {
@@ -33,9 +42,22 @@ export default {
       ],
     },
   }),
+  computed: {
+    nodeTypes() {
+      const groups = groupBy(this.$store.state.nodeTemplates, 'type')
+      // eslint-disable-next-line guard-for-in
+      for(const key in groups) {
+        Vue.set(this.submenuShow, key, false)
+      }
+      return groups
+    },
+  },
   methods: {
     createNode(name, type) {
       this.$store.commit('node:create', {type, name, pos: this.mouseState.pos})
+    },
+    showSubMenu(type) {
+      Object.keys(this.submenuShow).forEach((key) => this.submenuShow[key] = (key === type))
     },
   },
   setup(props, ctx) {
@@ -64,17 +86,33 @@ export default {
     display: flex
   }
   & > div.content {
+    width: 100%
     background: darken($color-grid, 10%)
     flexXY(center, start)
     flex-direction: column
   }
-  button {
+  ul {
+    width: 100%
+    list-style none
+    margin: 0
+    padding: 0
+    font-family 'Consolas', monospace
+    li {
+      position relative
+      cursor: pointer
+      div.submenu {
+        absPos(0, auto, auto, 100%)
+        width: 200px
+      }
+    }
+  }
+  button, li {
     flexXY(start, center)
     width: 100%
     padding: 3px 6px
     text-align: left
     font-family 'Consolas', monospace
-    font-size: 0.8em
+    font-size: 0.8rem
     border: 0
     border-bottom: 1px solid $color-grid
     background: $color-med

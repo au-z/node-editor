@@ -3,25 +3,25 @@ import CompositionApi, {reactive} from '@vue/composition-api'
 Vue.use(CompositionApi)
 
 export default (function useMouse() {
-	let instance: any = null
+  let instance: any = null
 
-	const mouseState = reactive({
-		pos: [0, 0],
-	})
+  const mouseState = reactive({
+    pos: [0, 0],
+  })
 
-	function init() {
-		document.addEventListener('mousemove', (e) => {
-			mouseState.pos = [e.clientX, e.clientY]
-		})
+  function init() {
+    document.addEventListener('mousemove', (e) => {
+      mouseState.pos = [e.clientX, e.clientY]
+    })
 
-		instance = {
-			mouseState,
-		}
+    instance = {
+      mouseState,
+    }
 
-		return instance
-	}
+    return instance
+  }
 
-	return {
-		getInstance: () => instance ? instance : init(),
-	}
+  return {
+    getInstance: () => instance ? instance : init(),
+  }
 })()

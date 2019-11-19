@@ -26,7 +26,6 @@
 <script>
 import usePorts from './usePorts.ts'
 import useNode from './useNode.ts'
-import Keybind from '../directives/v-keybind.ts'
 import NodePorts from './node-ports.vue'
 
 export default {

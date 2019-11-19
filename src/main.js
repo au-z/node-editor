@@ -21,8 +21,6 @@ Vue.directive('draggable', Draggable)
 import Input from './directives/v-input.ts'
 Vue.directive('input', Input)
 
-console.log('BANG BANG BANG')
-
 new Vue({
   el: '#app',
   store,

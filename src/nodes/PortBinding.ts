@@ -24,13 +24,19 @@ function mapPropType(type: Datatype) {
 		case Datatype.rgbchannel:
 			return Number
 		case Datatype.string:
+		case Datatype.url:
 			return String
 		case Datatype.vec2:
 		case Datatype.vec3:
 		case Datatype.vec4:
 		case Datatype.rgb:
 			return Array
+		case Datatype.blob:
+			return Blob
+		case Datatype.arraybuffer:
+			return ArrayBuffer
 		case Datatype.object:
+		default:
 			return Object
 	}
 }
@@ -67,10 +73,15 @@ export default function PortBinding(options: BindingOptions) {
 
 	if(options.outputs) {
 		Object.entries(options.outputs).forEach(([name, config]) => {
+			let dtProperties = DatatypeProperties[config.type]
+			if(!dtProperties) {
+				console.warn(`[PortBinding] unrecognized datatype provided: '${config.type}'`)
+				dtProperties = ({range: null, default: null} as any)
+			}
 			// set default output datatype values
 			outputs[name] = {
 				...config,
-				value: (config.value !== undefined) ? config.value : DatatypeProperties[config.type].default,
+				value: (config.value !== undefined) ? config.value : (DatatypeProperties[config.type] || {default: null}).default,
 			}
 		})
 	}

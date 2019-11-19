@@ -3,12 +3,16 @@ enum Datatype {
   int = 'int',
   float = 'float',
   string = 'string',
+  url = 'url',
   vec2 = 'vec2',
   vec3 = 'vec3',
   vec4 = 'vec4',
   rgb = 'rgb',
   rgbchannel = 'rgbchannel',
   object = 'object',
+
+  arraybuffer = 'arraybuffer',
+  blob = 'blob',
 }
 
 const DatatypeProperties = {
@@ -27,6 +31,10 @@ const DatatypeProperties = {
   [Datatype.string]: {
     range: null,
     default: '',
+  },
+  [Datatype.url]: {
+    range: null,
+    default: 'https://upload.wikimedia.org/wikipedia/commons/6/69/Icon_Images.svg',
   },
   [Datatype.vec2]: {
     range: null,
@@ -51,6 +59,15 @@ const DatatypeProperties = {
   [Datatype.object]: {
     range: null,
     default: {},
+  },
+
+  [Datatype.arraybuffer]: {
+    range: null,
+    default: new ArrayBuffer(0),
+  },
+  [Datatype.blob]: {
+    range: null,
+    default: new Blob(),
   },
 }
 

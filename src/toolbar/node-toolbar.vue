@@ -15,6 +15,12 @@
         <i class="fas fa-unlock"></i>
       </button>
     </div> -->
+    <div class="spacer"></div>
+    <ul class="viewports">
+      <li @click="() => $store.commit('ui:set', {name: 'gl-viewport', show: true})">
+        <i class="fas fa-window-maximize"></i>
+      </li>
+    </ul>
     <cmd-tool/>
   </div>
 </template>
@@ -47,9 +53,13 @@ export default {
   wh(100%, 40px)
   flexXY(space-between, space-between)
   background: $color-grid
+  z-index: 1
   .tools {
     flexXY(center, center)
     wh(auto, 100%)
+  }
+  div.spacer {
+    flex: 1
   }
   button {
     flexXY(center, center)
@@ -73,6 +83,18 @@ export default {
     border-right: 2px solid $color-dark-1
     &:first-child {
       border-left: 2px solid $color-dark-1
+    }
+  }
+  ul.viewports {
+    wh(auto, 100%)
+    flexXY(center, center)
+    list-style: none
+    margin: 0
+    padding: 0 36px
+    li {
+      padding: 8px
+      color: $color-bg
+      cursor: pointer
     }
   }
 }

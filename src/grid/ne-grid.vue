@@ -1,8 +1,6 @@
 <template>
-  <div class="base-grid">
-    <node-toolbar/>
+  <div class="ne-grid">
     <canvas ref="canvas" v-keybind="keybind" @click="() => $store.commit('node:selectAll', false)"></canvas>
-    <menu-add-node/>
     <slot></slot>
   </div>
 </template>
@@ -10,12 +8,9 @@
 <script>
 import Canvas from './Canvas.js'
 import Keybind from '../directives/v-keybind.ts'
-import NodeToolbar from '../toolbar/node-toolbar.vue'
-import MenuAddNode from '../interface/menu-add-node.vue'
 
 export default {
-  name: 'base-grid',
-  components: {NodeToolbar, MenuAddNode},
+  name: 'ne-grid',
   directives: {Keybind},
   data: (vm) => ({
     canvas: null,
@@ -76,7 +71,7 @@ export default {
 @require '~style/variables.styl'
 @require '~style/mixins.styl'
 
-.base-grid{
+.ne-grid {
   absPos(0, 0, 0, 0)
   max-height: 100vh
   background: $color-bg

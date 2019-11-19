@@ -1,9 +1,13 @@
+/* eslint-disable no-multi-spaces */
+
 const path = require('path')
 const webpack = require('webpack')
 
 const VueWebpackPlugin = require('vue-loader/lib/plugin.js')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+
+const load = (regex, use, exclude = true) => ({test: regex, use, exclude: exclude ? /node_modules/ : undefined})
 
 module.exports = {
   entry: {
@@ -18,34 +22,12 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-      },
-      {
-        test: /\.(j|t)s$/,
-        loader: 'babel-loader',
-      },
-      {
-        test: /\.(js|vue)$/,
-        loader: 'eslint-loader',
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader',
-        ],
-      },
-      {
-        test: /\.styl(us)?$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          'stylus-loader',
-        ],
-      },
+      load(/\.vue$/,              ['vue-loader']),
+      load(/\.(j|t)s$/,           ['babel-loader']),
+      load(/\.(js|vue)$/,         ['eslint-loader']),
+      load(/\.(glsl|vert|frag)$/, ['webpack-glsl-loader']),
+      load(/\.css$/,              ['style-loader', 'css-loader'], false),
+      load(/\.styl(us)?$/,        ['style-loader', 'css-loader', 'stylus-loader']),
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         loader: 'url-loader',
@@ -68,7 +50,6 @@ module.exports = {
     extensions: ['.js', '.ts', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
-      'three': path.resolve(__dirname, 'node_modules/three/build/three.module.js'),
       'src': path.resolve(__dirname, 'src/'),
       'style': path.resolve(__dirname, 'src/style'),
     },

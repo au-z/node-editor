@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 Vue.use(Vuex)
-
+import GL from '../gl/GL'
 import {Port} from '../nodes/usePorts'
 
 interface Edge {
-  node: string
-  port: string
+  node: string,
+  port: string,
 }
 
 interface NodeTemplate {
@@ -15,11 +15,11 @@ interface NodeTemplate {
   is: string,
 }
 
-function insertAssign(obj, key, value) {
-  if (obj[key]) {
-    obj[key] = value
+function insertAssignById(obj, value) {
+  if (obj[value.id]) {
+    obj[value.id] = value
   } else {
-    Vue.set(obj, key, value)
+    Vue.set(obj, value.id, value)
   }
 }
 
@@ -39,12 +39,20 @@ function Node(node) {
 }
 
 export default new Vuex.Store({
+  modules: {
+    gl: GL.store,
+  },
   state: {
-    nodeTemplates: [] as NodeTemplate[],
     nodes: {},
     edges: {},
+    nodeTemplates: [] as NodeTemplate[],
     cmd: {
       edge: {from: null, to: null},
+    },
+    ui: {
+      'gl-viewport': {
+        show: true,
+      },
     },
   },
   getters: {
@@ -90,10 +98,7 @@ export default new Vuex.Store({
   },
   mutations: {
     'node:register': (state, template: NodeTemplate) => state.nodeTemplates.push(template),
-    'node:create': (state, node) => {
-      const n = Node(node)
-      insertAssign(state.nodes, n.id, n)
-    },
+    'node:create': (state, node) => insertAssignById(state.nodes, Node(node)),
     'node:persistState': (state, {id, key, value}) => Vue.set(state.nodes[id].state, key, value),
     'node:setPosition': (state, {id, pos}) => {
       state.nodes[id].pos = pos
@@ -151,5 +156,8 @@ export default new Vuex.Store({
     'cmd:edge:create': (state, {node, port, type}) => {
       state.cmd.edge[type] = {node, port}
     },
+
+    'ui:set': (state, {name, ...properties}) => Object.entries(properties)
+      .forEach(([key, value]) => Vue.set(state.ui[name], key, value)),
   },
 })

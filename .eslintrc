@@ -29,6 +29,7 @@
     "no-console": "off",
     "no-unused-vars": "warn",
     "key-spacing": "off",
+    "keyword-spacing": "off",
     "linebreak-style": "off",
     "object-curly-spacing": "off",
     "switch-colon-spacing": "off",
