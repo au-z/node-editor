@@ -1,36 +1,55 @@
-import {ref, watch} from '@vue/composition-api'
+import {ref, watch, Ref, computed} from '@vue/composition-api'
 import GL from 'src/gl/GL'
 import {CustomPass} from 'src/gl/postprocessing/CustomPass'
 import DotScreenShader from 'src/gl/shader/dotscreen/DotScreen.shader'
-import { Pass } from 'three/examples/jsm/postprocessing/Pass'
+import PassThroughShader from 'src/gl/shader/passthrough/PassThrough.shader'
+import {Pass} from 'three/examples/jsm/postprocessing/Pass'
+import { IShader } from 'src/gl/shader/IShader'
+
+interface ICustomPass extends Pass {
+  reset(shader: IShader)
+}
 
 export default function useGLFilter(ctx, props) {
-  const {composer} = GL.useContext(ctx, props)
+  const {composer} = GL.useContext()
 
   const filter = ref('PASS-THROUGH')
-  let glFilter: Pass
+  const shader: Ref<IShader> = ref(getShader(filter.value))
 
-  const applyFilter = (filter, nodeId) => {
-    switch(filter.toUpperCase()) {
+  const uniforms = computed({
+    get: () => shader.value.uniforms,
+    set: (uniforms) => this.uniforms = uniforms,
+  })
+
+  let glFilter: ICustomPass = new CustomPass(shader.value, props.node.id)
+  composer.addPass(glFilter)
+
+  function getShader(filter, uniforms = {}): IShader {
+    switch(filter) {
       case 'DOT-SCREEN':
-        if(glFilter) {
-          glFilter.enabled = true
-        } else {
-          glFilter = new CustomPass(DotScreenShader(), {nodeId})
-          // glFilter = new DotScreenPass(new Vector2(0, 0), 1.57, 100)
-          composer.value.addPass(glFilter)
-        }
-        break
+        return DotScreenShader(uniforms)
       case 'PASS-THROUGH':
       default:
-        glFilter.enabled = false
-        break
+        return PassThroughShader(uniforms)
     }
   }
 
-  watch(filter, (filter) => applyFilter(filter, props.node.id))
+  const refreshFilter = () => {
+    shader.value = getShader('DOT-SCREEN', {scale: {value: Math.random() * 4}})
+    shader.value.uniforms.scale.value = Math.random() * 4
+    console.log(shader.value.uniforms.scale.value)
+    glFilter.reset(shader.value)
+  }
+
+  watch(filter, (filter) => {
+    shader.value = getShader(filter);
+    glFilter.reset(shader.value)
+    console.log(composer.passes)
+  })
 
   return {
     filter,
+    uniforms,
+    refreshFilter,
   }
 }

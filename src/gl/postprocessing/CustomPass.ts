@@ -6,15 +6,7 @@ const CustomPass = function(shader, meta) {
 
   this.meta = meta
 
-  this.uniforms = UniformsUtils.clone(shader.uniforms)
-
-  this.material = new ShaderMaterial({
-    uniforms: this.uniforms,
-    vertexShader: shader.vs,
-    fragmentShader: shader.fs,
-  })
-
-  this.fsQuad = new Pass.FullScreenQuad(this.material)
+  this.reset(shader)
 }
 
 CustomPass.prototype = Object.assign(Object.create(Pass.prototype), {
@@ -32,6 +24,17 @@ CustomPass.prototype = Object.assign(Object.create(Pass.prototype), {
       if(this.clear) renderer.clear()
       this.fsQuad.render(renderer)
     }
+  },
+
+  reset: function(shader) {
+    this.uniforms = UniformsUtils.clone(shader.uniforms)
+    this.material = new ShaderMaterial({
+      uniforms: this.uniforms,
+      vertexShader: shader.vs,
+      fragmentShader: shader.fs,
+    })
+
+    this.fsQuad = new Pass.FullScreenQuad(this.material)
   }
 })
 

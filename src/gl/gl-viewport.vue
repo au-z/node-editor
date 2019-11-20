@@ -33,8 +33,8 @@ export default {
       this.$store.commit('ui:set', {name: 'gl-viewport', show: false})
     },
   },
-  setup(props, ctx) {
-    GL.init(ctx, props)
+  mounted() {
+    GL.useContext(this.$refs.container)
   },
 }
 </script>

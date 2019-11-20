@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 Vue.use(Vuex)
-import GL from '../gl/GL'
 import {Port} from '../nodes/usePorts'
 
 interface Edge {
@@ -39,9 +38,6 @@ function Node(node) {
 }
 
 export default new Vuex.Store({
-  modules: {
-    gl: GL.store,
-  },
   state: {
     nodes: {},
     edges: {},
