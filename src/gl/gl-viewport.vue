@@ -1,9 +1,13 @@
 <template>
-  <div v-show="ui.show" class="node ne-node gl-viewport" v-draggable="draggable">
+  <div v-show="ui.show" class="node ne-node gl-viewport" v-draggable="draggable"
+    :style="{
+      width: `${ui.width || 512}px`,
+      height: `${ui.height || 512}px`,
+    }">
     <div class="header">
-      <span>Preview</span>
+      <span>Post Processing</span>
       <ul class="window-fn">
-        <li @click="hide"><i class="fas fa-times"></i></li>
+        <li @click="hide" title="Close Window"><i class="fas fa-times"></i></li>
       </ul>
     </div>
     <div class="container" @mouseover="toggleDrag(false)" @mouseleave="toggleDrag(true)" ref="container"></div>
@@ -16,6 +20,7 @@ import GL from 'src/gl/GL.ts'
 export default {
   name: 'gl-viewport',
   data: () => ({
+    gl: null,
     draggable: {
       stopDragging: false,
     },
@@ -34,7 +39,11 @@ export default {
     },
   },
   mounted() {
-    GL.useContext(this.$refs.container)
+    this.gl = GL.useContext(this.$refs.container)
+    this.$watch('ui', (ui) => {
+      if(!this.gl || !ui.width || !ui.height) return
+      this.gl.resize(ui.width, ui.height)
+    }, {deep: true})
   },
 }
 </script>
@@ -44,12 +53,10 @@ export default {
 @require '~style/mixins.styl'
 
 .gl-viewport {
-  wh(420px, 420px)
-  absPos(80px, 16px, auto, auto)
+  absPos(80px, 16px, inherit, inherit)
   flexXY(start, start)
   flex-direction column
   z-index: 1
-  border: 1px solid #333
   .container {
     wh(100%, 100%)
     position relative

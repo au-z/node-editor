@@ -12,6 +12,13 @@ export default (() => {
     context.composer.render()
   }
 
+  function resize(W, H) {
+    context.camera.aspect = W / H
+    context.camera.updateProjectionMatrix()
+    context.renderer.setSize(W, H)
+    console.log(this.gl)
+  }
+
   function init(el) {
     if(!el) throw new Error('No container ref found.')
 
@@ -43,7 +50,7 @@ export default (() => {
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.enabled = false
 
-    context = {camera, scene, light, renderer, controls, composer}
+    context = {camera, scene, light, renderer, controls, composer, resize}
 
     animate()
     return context
