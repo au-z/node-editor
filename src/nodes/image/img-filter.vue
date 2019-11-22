@@ -24,7 +24,7 @@ export default {
   directives: {Preserve},
   mixins: [PortBinding({
     inputs: {
-      img: {type: 'blob', value: new Blob()},
+      img: {type: 'blob', default: new Blob()},
     },
     outputs: {
       img: {type: 'blob', value: new Blob(), binding: 'img'},

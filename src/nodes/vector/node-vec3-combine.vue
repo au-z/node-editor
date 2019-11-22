@@ -10,9 +10,9 @@ export default {
   name: 'node-vec3-combine',
   mixins: [PortBinding({
     inputs: {
-      num0: {type: 'float', value: 0},
-      num1: {type: 'float', value: 0},
-      num2: {type: 'float', value: 0},
+      num0: {type: 'float', default: 0},
+      num1: {type: 'float', default: 0},
+      num2: {type: 'float', default: 0},
     },
     outputs: {vec3: {type: 'vec3', value: [0, 0, 0], binding: 'vec3'}},
   })],

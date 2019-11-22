@@ -16,16 +16,11 @@ export default {
   name: 'node-blend',
   mixins: [PortBinding({
     inputs: {
-      A: {type: 'rgb', value: [0, 0, 0]},
-      B: {type: 'rgb', value: [0, 0, 0]},
+      A: {type: 'rgb', default: [0, 0, 0]},
+      B: {type: 'rgb', default: [0, 0, 0]},
     },
     outputs: {sum: {type: 'rgb', value: [0, 0, 0], binding: 'result'}}
   })],
-  props: {
-    node: {
-      type: Object,
-    },
-  },
   data: () => ({
     operation: 'sum',
   }),

@@ -5,14 +5,15 @@ interface Node {
   type: string,
   id: string,
   name: string,
-  el: HTMLElement,
+  el: HTMLElement | null,
   pos: [number, number],
   in: Port[],
   out: Port[],
   display: {
     dirty: Boolean,
     selected: Boolean,
-  }
+  },
+  state: Object
 }
 
 export default function useNode(ctx, nodeId) {

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 Vue.use(Vuex)
 import {Port} from '../nodes/usePorts'
+import {Node} from '../nodes/useNode'
 
 interface Edge {
   node: string,
@@ -22,7 +23,7 @@ function insertAssignById(obj, value) {
   }
 }
 
-function Node(node) {
+function buildNode(node): Node {
   return {
     type: node.type,
     id: node.id || Math.random().toString(36).substr(2, 9),
@@ -31,15 +32,17 @@ function Node(node) {
     pos: node.pos,
     in: node.in ? node.in.map((port) => ({...port, value: null})) : {},
     out: node.out ? node.out.map((port) => ({...port, value: null})) : {},
-    dirty: false,
-    selected: false,
+    display: {
+      dirty: false,
+      selected: false,
+    },
     state: {},
   }
 }
 
 export default new Vuex.Store({
   state: {
-    nodes: {},
+    nodes: {} as Record<string, Node>,
     edges: {},
     nodeTemplates: [] as NodeTemplate[],
     cmd: {
@@ -47,16 +50,16 @@ export default new Vuex.Store({
     },
     ui: {
       'gl-viewport': {
-        show: true,
+        show: false,
       },
     },
   },
   getters: {
     nodes: (state) => Object.values(state.nodes),
-    selectedNodes: (state, getters) => getters.nodes.filter((n) => n.selected),
     nodeById: (state, getters) => (id) => getters.nodes.find((n) => n.id === id),
     nodeByName: (state, getters) => (name) => getters.nodes.find((n) => n.name === name),
-    dirtyNodes: (state, getters) => getters.nodes.filter((n) => n.dirty),
+    selectedNodes: (state, getters) => getters.nodes.filter((n) => n.display.selected),
+    dirtyNodes: (state, getters) => getters.nodes.filter((n) => n.display.dirty),
     nodeInputs: (state, getters) => (id) => {
       const node = getters.nodeById(id)
       return (Object.values(node.in) as Port[]).map((port: Port) => {
@@ -94,31 +97,32 @@ export default new Vuex.Store({
   },
   mutations: {
     'node:register': (state, template: NodeTemplate) => state.nodeTemplates.push(template),
-    'node:create': (state, node) => insertAssignById(state.nodes, Node(node)),
+    'node:create': (state, node) => insertAssignById(state.nodes, buildNode(node)),
     'node:persistState': (state, {id, key, value}) => Vue.set(state.nodes[id].state, key, value),
     'node:setPosition': (state, {id, pos}) => {
       state.nodes[id].pos = pos
-      state.nodes[id].dirty = true
+      state.nodes[id].display.dirty = true
     },
-    'node:initPorts': (state, {id, areInputs, ports}) => {
-      Object.keys(ports).forEach((port) => {
-        Vue.set(state.nodes[id][areInputs ? 'in' : 'out'], port, {name: port, ...ports[port]})
-      })
+    'node:initInputPorts': (state, {id, ports}) => {
+      Object.entries(ports).forEach(([name, port]) => Vue.set(state.nodes[id].in, name, {name, ...port}))
+    },
+    'node:initOutputPorts': (state, {id, ports}) => {
+      Object.entries(ports).forEach(([name, port]) => Vue.set(state.nodes[id].out, name, {name, ...port}))
     },
     'node:attachElement': (state, {id, el}) => state.nodes[id].el = el,
 
     'node:select': (state, id) => {
-      Object.values(state.nodes).forEach((n) => n.selected = n.id === id)
+      Object.values(state.nodes).forEach((n) => n.display.selected = n.id === id)
     },
     'node:selectAll': (state, value) => {
-      if(Object.values(state.nodes).every((n) => n.selected) || value === false) {
-        Object.values(state.nodes).forEach((n) => n.selected = false)
+      if(Object.values(state.nodes).every((n) => n.display.selected) || value === false) {
+        Object.values(state.nodes).forEach((n) => n.display.selected = false)
       } else {
-        Object.values(state.nodes).forEach((n) => n.selected = true)
+        Object.values(state.nodes).forEach((n) => n.display.selected = true)
       }
     },
 
-    'node:clean': (state, id) => state.nodes[id].dirty = false,
+    'node:clean': (state, id) => state.nodes[id].display.dirty = false,
 
     'node:disconnect': (state, edges) => edges.forEach((e) => Vue.delete(state.edges, e)),
     'node:deleteSelected': (state, nodeIds) => nodeIds.forEach((id) => Vue.delete(state.nodes, id)),
@@ -138,15 +142,15 @@ export default new Vuex.Store({
       state.nodes[from.node].out[from.port].connected = true
       state.nodes[to.node].in[to.port].connected = true
 
-      state.nodes[from.node].dirty = true
-      state.nodes[to.node].dirty = true
+      state.nodes[from.node].display.dirty = true
+      state.nodes[to.node].display.dirty = true
 
       state.cmd.edge.from = null
       state.cmd.edge.to = null
     },
     'edge:disconnect': (state, {node, port}) => {
       Vue.delete(state.edges, `${node}.${port}`)
-      state.nodes[node].dirty = true
+      state.nodes[node].display.dirty = true
     },
 
     'cmd:edge:create': (state, {node, port, type}) => {

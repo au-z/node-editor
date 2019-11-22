@@ -71,7 +71,34 @@ const DatatypeProperties = {
   },
 }
 
+function mapToType(type: Datatype) {
+	switch(type) {
+		case Datatype.boolean:
+			return Boolean
+		case Datatype.int:
+		case Datatype.float:
+		case Datatype.rgbchannel:
+			return Number
+		case Datatype.string:
+		case Datatype.url:
+			return String
+		case Datatype.vec2:
+		case Datatype.vec3:
+		case Datatype.vec4:
+		case Datatype.rgb:
+			return Array
+		case Datatype.blob:
+			return Blob
+		case Datatype.arraybuffer:
+			return ArrayBuffer
+		case Datatype.object:
+		default:
+			return Object
+	}
+}
+
 export {
 	Datatype,
-	DatatypeProperties,
+  DatatypeProperties,
+  mapToType,
 }

@@ -1,111 +1,88 @@
-import {Datatype, Port} from './usePorts'
-import { DatatypeProperties } from './Datatype'
-import store from 'src/store'
+import {Datatype} from './usePorts'
+import {DatatypeProperties, mapToType} from './Datatype'
 
 interface PortConfig {
 	type: Datatype
+	relativePos: [number, number]
+}
+
+interface InputPortConfig extends PortConfig {
+	default?: any
+}
+
+interface OutputPortConfig extends PortConfig {
 	value?: any
-	default: any
-	binding: string
+	binding?: string
 }
 
 interface BindingOptions {
-	inputs: Record<string, PortConfig>
-	outputs: Record<string, PortConfig>
+	inputs: Record<string, InputPortConfig>
+	outputs: Record<string, OutputPortConfig>
 	reactive: string[]
 }
 
-function mapPropType(type: Datatype) {
-	switch(type) {
-		case Datatype.boolean:
-			return Boolean
-		case Datatype.int:
-		case Datatype.float:
-		case Datatype.rgbchannel:
-			return Number
-		case Datatype.string:
-		case Datatype.url:
-			return String
-		case Datatype.vec2:
-		case Datatype.vec3:
-		case Datatype.vec4:
-		case Datatype.rgb:
-			return Array
-		case Datatype.blob:
-			return Blob
-		case Datatype.arraybuffer:
-			return ArrayBuffer
-		case Datatype.object:
-		default:
-			return Object
-	}
-}
-
-function propDefault(value: any) {
-	if(typeof value === 'object') {
-		return () => value
-	} else {
-		return value
-	}
-}
-
 export default function PortBinding(options: BindingOptions) {
-	let inputs = {}
-	let outputs = {}
+	const propDefault = (val: any) => (typeof val === 'object') ? () => (val) : val
+
+	const datatypeProperties = (datatype) => {
+		let properties = DatatypeProperties[datatype]
+		if(!properties) {
+			console.warn(`[PortBinding] unrecognized datatype provided: '${datatype}'`)
+			properties = ({range: null, default: null} as any)
+		}
+		return properties
+	}
+
+	let inputs = {} as Record<string, InputPortConfig>
+	let outputs = {} as Record<string, OutputPortConfig>
 
 	let props = {
-		node: Object,
+		node: {} as any,
 	}
 
-	if(options.inputs) {
-		Object.entries(options.inputs).forEach(([name, config]) => {
-			inputs[name] = {
-				...config,
-				relativePos: config.relativePos,
-			},
-			props[name] = {
-				type: mapPropType(config.type),
-				required: false,
-				default: propDefault(config.value || config.default),
-			}
-		})
-	}
+	options.inputs && Object.entries(options.inputs).forEach(([name, config]) => {
+		let properties = datatypeProperties(config.type)
 
-	if(options.outputs) {
-		Object.entries(options.outputs).forEach(([name, config]) => {
-			let dtProperties = DatatypeProperties[config.type]
-			if(!dtProperties) {
-				console.warn(`[PortBinding] unrecognized datatype provided: '${config.type}'`)
-				dtProperties = ({range: null, default: null} as any)
-			}
-			// set default output datatype values
-			outputs[name] = {
-				...config,
-				value: (config.value !== undefined) ? config.value : (DatatypeProperties[config.type] || {default: null}).default,
-			}
-		})
-	}
+		inputs[name] = {...config, relativePos: [0, 0]}
+
+		props[name] = {
+			type: mapToType(config.type),
+			default: propDefault(config.default),
+		}
+	})
+
+	options.outputs && Object.entries(options.outputs).forEach(([name, config]) => {
+		let properties = datatypeProperties(config.type)
+
+		outputs[name] = {
+			...config,
+			value: (config.value != null) ? config.value : properties?.default,
+		}
+	})
 
 	function created() {
-		this.$emit('initInputs', inputs)
-		this.$emit('initOutputs', outputs)
-
 		if(options.outputs) {
 			if(Object.values(options.outputs).every((config) => !config.binding) && options.inputs) {
 				Object.entries(options.inputs).forEach(([name, config]) => {
-					this.$watch(name, (val) => {
-						this.$emit('input', {[name]: val})
+					this.$watch(name, (val) => this.$emit('input', {[name]: val}), {
+						deep: true,
+						immediate: true,
 					})
 				})
 			}
-			Object.entries(options.outputs).forEach(([name, config]) => {
-				if(config.binding) {
-					this.$watch(config.binding, (val) => {
-						this.$emit('input', {[name]: val})
-					}, {deep: true, immediate: true})
+
+			Object.entries(outputs).forEach(([name, output]) => {
+				if(output.binding) {
+					this.$watch(output.binding, (val) => this.$emit('input', {[name]: val}), {
+						deep: true,
+						immediate: true
+					})
 				}
 			})
 		}
+
+		this.$emit('initInputs', inputs)
+		this.$emit('initOutputs', outputs)
 	}
 
 	return {

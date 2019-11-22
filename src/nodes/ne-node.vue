@@ -1,5 +1,5 @@
 <template>
-  <div :class="['node ne-node', {selected: node.selected}]" ref="el" v-draggable="{onPositionChange}"
+  <div :class="['node ne-node', {selected: node.display.selected}]" ref="el" v-draggable="{onPositionChange}"
     :style="{
       left: `${node.pos[0]}px`,
       top: `${node.pos[1]}px`,
@@ -39,8 +39,8 @@ export default {
   },
   data: (vm) => ({
     events: {
-      initInputs: (ports) => vm.$store.commit('node:initPorts', {id: vm.node.id, areInputs: true, ports}),
-      initOutputs: (ports) => vm.$store.commit('node:initPorts', {id: vm.node.id, areInputs: false, ports}),
+      initInputs: (ports) => vm.$store.commit('node:initInputPorts', {id: vm.node.id, ports}),
+      initOutputs: (ports) => vm.$store.commit('node:initOutputPorts', {id: vm.node.id, ports}),
     },
   }),
   setup(props, ctx) {

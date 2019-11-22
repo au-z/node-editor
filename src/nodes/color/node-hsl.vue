@@ -28,9 +28,9 @@ export default {
   directives: {Preserve},
   mixins: [PortBinding({
     inputs: {
-      H: {type: 'number', default: 20},
-      S: {type: 'number', default: 100},
-      L: {type: 'number', default: 50},
+      H: {type: 'int', default: 20},
+      S: {type: 'int', default: 100},
+      L: {type: 'int', default: 50},
     },
     outputs: {color: {type: 'rgb', binding: 'rgb'}},
   })],

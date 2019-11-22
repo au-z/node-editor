@@ -1,28 +1,34 @@
 import {onMounted, computed, ref, watch, Ref} from '@vue/composition-api'
 import {Node} from './useNode'
-import {Datatype, DatatypeProperties} from './Datatype'
+import {Datatype, DatatypeProperties, mapToType} from './Datatype'
 import Vue from 'vue'
 
 interface Port {
   name: string,
   type: Datatype,
   relativePos: [number, number],
-  value: any,
+  default?: any,
+  value?: any,
   connected: boolean,
 }
 
 export default function usePorts(ctx, nodeId: string) {
   const store = ctx.root.$store
+
   const rNode = computed(() => store.getters.nodeById(nodeId))
 
   const inputs: Ref<Port[]> = computed(() => store.getters.nodeInputs(rNode.value.id))
+
   const outputs: Ref<Port[]> = computed(() => Object.values(rNode.value.out))
+
   const inputBindings: Ref<Record<string, any>> = computed(() => inputs.value.reduce((acc, port) => {
     if(port.value != null) {
-      acc[port.name] = port.value
+      const inputType = mapToType(port.type)
+      acc[port.name] = tryConvert(port.value, typeof inputType, inputType)
     }
     return acc
   }, {}))
+
   const outputBindings = ref({})
 
   const connectedInputs = computed(() => {
@@ -31,6 +37,19 @@ export default function usePorts(ctx, nodeId: string) {
       return acc
     }, {})
   })
+
+  const tryConvert = (val: any, type: string, constructor: Function) => {
+    if(type !== 'boolean') return val
+
+    try {
+      const converted = constructor(val)
+      if(converted != null) {
+        return converted
+      }
+    } catch {
+      return val
+    }
+  }
 
   const positionPorts = (node: Node) => {
     if (!node.el) return
@@ -63,11 +82,12 @@ export default function usePorts(ctx, nodeId: string) {
     return value
   }
 
-  watch(outputBindings, (outputBindings) => Object.keys(outputBindings).forEach((key) => {
-    rNode.value.out[key] && store.commit('port:set', {
+  watch(outputBindings, (bindings) => Object.entries(bindings).forEach(([port, binding]) => {
+    console.log(port, binding)
+    rNode.value.out[port] && store.commit('port:set', {
       id: rNode.value.id,
-      port: key,
-      value: clamp(rNode.value.out[key], outputBindings[key]),
+      port,
+      value: clamp(rNode.value.out[port], binding),
     })
   }))
 

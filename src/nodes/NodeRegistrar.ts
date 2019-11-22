@@ -9,9 +9,11 @@ export default function NodeRegistrar(store: any) {
 
     {type: 'color', name: 'RGB Color', node: require('./color/node-rgb').default},
     {type: 'color', name: 'HSL Color', node: require('./color/node-hsl').default},
-    {type: 'color', name: 'Blend', node: require('./math/node-blend').default},
+    {type: 'color', name: 'Blend', node: require('./color/node-blend').default},
     {type: 'color', name: 'Polyad', node: require('./color/node-color-polyad').default},
     {type: 'color', name: 'Preview', node: require('./color/node-out').default},
+
+    {type: 'logic', name: 'And', node: require('./logic/node-logical-and.vue').default},
 
     {type: 'image', name: 'Preview', node: require('./image/img-preview').default},
     {type: 'image', name: 'Filter', node: require('./image/img-filter').default},

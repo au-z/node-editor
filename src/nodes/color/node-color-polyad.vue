@@ -29,7 +29,7 @@ export default {
   name: 'node-color-polyad',
   directives: {Preserve},
   mixins: [PortBinding({
-    inputs: {color: {type: 'rgb', value: [0, 0, 0]}},
+    inputs: {color: {type: 'rgb', default: [0, 0, 0]}},
     outputs: {
       A: {type: 'rgb', default: [0, 0, 0], binding: 'poly.A'},
       B: {type: 'rgb', default: [0, 0, 0], binding: 'poly.B'},

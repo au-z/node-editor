@@ -12,7 +12,7 @@ import useColorProperties from './useColorProperties.ts'
 export default {
   name: 'node-out',
   mixins: [PortBinding({
-    inputs: {color: {type: 'rgb', value: [0, 0, 0]}},
+    inputs: {color: {type: 'rgb', default: [0, 0, 0]}},
   })],
   computed: {
     hex() {return this.rgb_hex(this.color)},
