@@ -1,15 +1,16 @@
 <template>
-  <div :class="['node ne-node', {selected: node.display.selected}]" ref="el" v-draggable="{onPositionChange}"
+  <div :class="['node ne-node', {selected: node.display.selected}]" ref="el" v-draggable="{stopDragging, onPositionChange}"
     :style="{
       left: `${node.pos[0]}px`,
       top: `${node.pos[1]}px`,
     }"
-    @click="$store.commit('node:select', node.id)">
+    @mousedown="$store.commit('node:select', node.id)">
     <div class="header">{{node.name}}</div>
     <node-ports :ports="inputs"
       :incoming="connectedInputs"
       @connect="(port) => $store.commit('cmd:edge:create', {node: node.id, port, type: 'to'})"
-      @disconnect="(port) => $store.commit('edge:disconnect', {node: node.id, port})"/>
+      @disconnect="(port) => $store.commit('edge:disconnect', {node: node.id, port})"
+      @mouseover="() => stopDragging = false" @mouseleave="() => stopDragging = true"/>
 
     <div class="content">
       <component :is="node.type" :node="node"
@@ -19,7 +20,8 @@
     </div>
 
     <node-ports :ports="outputs" out
-      @connect="(port) => $store.commit('cmd:edge:create', {node: node.id, port, type: 'from'})"/>
+      @connect="(port) => $store.commit('cmd:edge:create', {node: node.id, port, type: 'from'})"
+      @mouseover="() => stopDragging = false" @mouseleave="() => stopDragging = true" />
   </div>
 </template>
 
@@ -42,6 +44,7 @@ export default {
       initInputs: (ports) => vm.$store.commit('node:initInputPorts', {id: vm.node.id, ports}),
       initOutputs: (ports) => vm.$store.commit('node:initOutputPorts', {id: vm.node.id, ports}),
     },
+    stopDragging: false,
   }),
   setup(props, ctx) {
     const {rNode, onPositionChange, deleteNode} = useNode(ctx, props.id)

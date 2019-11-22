@@ -132,6 +132,7 @@ export default new Vuex.Store({
 
     'edges:import': (state, edges) => state.edges = edges,
     'edge:connect': (state, {from, to}) => {
+      console.log(state.edges, from, to)
       const edgeId = `${to.node}.${to.port}`
       if (state.edges[edgeId]) {
         state.edges[edgeId] = from

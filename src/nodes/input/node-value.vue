@@ -1,5 +1,8 @@
 <template>
   <div class="node-value" v-preserve="value">
+    <div class="header">
+      <i class="fa fa-redo"></i>
+    </div>
     <div class="input">
       <input type="number" step="0.1" v-model.number="value">
     </div>

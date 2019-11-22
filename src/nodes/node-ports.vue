@@ -8,14 +8,17 @@
       height: `${port.D}px`,
       borderRadius: `${port.D}px`,
     }"
-    @click="() => connect(p.name)">
+    v-drag-connect="{isOutput: out, port: p.name, connect, onCableDrag}">
     </div>
   </div>
 </template>
 
 <script>
+import DragConnect from './v-drag-connect.ts'
+
 export default {
   name: 'node-ports',
+  directives: {DragConnect},
   props: {
     ports: {
       type: Array,
@@ -43,6 +46,9 @@ export default {
       } else {
         this.$emit('connect', port)
       }
+    },
+    onCableDrag(e) {
+      console.log(`${e.clientX}, ${e.clientY}`)
     },
   },
 }
