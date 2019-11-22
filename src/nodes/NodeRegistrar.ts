@@ -13,7 +13,10 @@ export default function NodeRegistrar(store: any) {
     {type: 'color', name: 'Polyad', node: require('./color/node-color-polyad').default},
     {type: 'color', name: 'Preview', node: require('./color/node-out').default},
 
-    {type: 'logic', name: 'And', node: require('./logic/node-logical-and.vue').default},
+    {type: 'logic', name: 'AND', node: require('./logic/node-logical-and.vue').default},
+    {type: 'logic', name: 'NAND', node: require('./logic/node-logical-nand.vue').default},
+    {type: 'logic', name: 'OR', node: require('./logic/node-logical-or.vue').default},
+    {type: 'logic', name: 'XOR', node: require('./logic/node-logical-xor.vue').default},
 
     {type: 'image', name: 'Preview', node: require('./image/img-preview').default},
     {type: 'image', name: 'Filter', node: require('./image/img-filter').default},

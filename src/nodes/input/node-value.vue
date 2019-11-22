@@ -1,7 +1,7 @@
 <template>
   <div class="node-value" v-preserve="value">
     <div class="input">
-      <input type="number" step="0.01" v-model.number="value">
+      <input type="number" step="0.1" v-model.number="value">
     </div>
   </div>
 </template>
@@ -18,7 +18,7 @@ export default {
     outputs: {val: {type: 'float', binding: 'value'}},
   })],
   data: (vm) => ({
-    value: 0.500,
+    value: 1,
   }),
   setup(props, ctx) {
     const {nodeState} = useLocalStorage.getInstance(ctx)

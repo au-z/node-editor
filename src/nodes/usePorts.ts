@@ -24,7 +24,7 @@ export default function usePorts(ctx, nodeId: string) {
   const inputBindings: Ref<Record<string, any>> = computed(() => inputs.value.reduce((acc, port) => {
     if(port.value != null) {
       const inputType = mapToType(port.type)
-      acc[port.name] = tryConvert(port.value, typeof inputType, inputType)
+      acc[port.name] = tryConvert(port.value, port.type, inputType)
     }
     return acc
   }, {}))
@@ -38,11 +38,11 @@ export default function usePorts(ctx, nodeId: string) {
     }, {})
   })
 
-  const tryConvert = (val: any, type: string, constructor: Function) => {
-    if(type !== 'boolean') return val
+  const tryConvert = (val: any, type: Datatype, ctor: Function) => {
+    if(type !== Datatype.boolean) return val
 
     try {
-      const converted = constructor(val)
+      const converted = ctor(val)
       if(converted != null) {
         return converted
       }
