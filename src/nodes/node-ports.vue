@@ -8,13 +8,15 @@
       height: `${port.D}px`,
       borderRadius: `${port.D}px`,
     }"
-    v-drag-connect="{isOutput: out, port: p.name, connect, onCableDrag}">
+    v-drag-connect="{isOutput: out, port: p, connect, onCableDrag, onCableMouseUp}">
     </div>
   </div>
 </template>
 
 <script>
 import DragConnect from './v-drag-connect.ts'
+import Canvas from 'src/grid/Canvas'
+import Cable from 'src/grid/canvas/Cable'
 
 export default {
   name: 'node-ports',
@@ -25,6 +27,10 @@ export default {
       required: true,
       default: () => [],
     },
+    nodeId: {
+      type: String,
+      required: true,
+    },
     incoming: {
       type: Object,
       default: () => ({}),
@@ -34,11 +40,16 @@ export default {
       default: false,
     },
   },
-  data: () => ({
+  data: (vm) => ({
     port: {
       D: 12,
     },
+    canvas: null,
+    tempCable: Cable([0, 0], [0, 0], '#888'),
   }),
+  computed: {
+    node() {return this.$store.getters.nodeById(this.nodeId)},
+  },
   methods: {
     connect(port) {
       if (this.incoming[port]) {
@@ -47,9 +58,22 @@ export default {
         this.$emit('connect', port)
       }
     },
-    onCableDrag(e) {
-      console.log(`${e.clientX}, ${e.clientY}`)
+    onCableDrag(el, binding, e) {
+      this.canvas.wipe()
+      const portPos = this.$store.getters.portPos(this.nodeId, binding.value.port.name, false)
+      this.tempCable.setFrom(portPos)
+      this.tempCable.setTo([e.clientX, e.clientY])
+      this.tempCable.toggle(true)
     },
+    onCableMouseUp(el, binding, e) {
+      this.tempCable.toggle(false)
+    },
+  },
+  mounted() {
+    this.canvas = Canvas.getInstance()
+    this.canvas.onRender((ctx) => {
+      this.tempCable.draw(ctx)
+    })
   },
 }
 </script>

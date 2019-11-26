@@ -74,7 +74,10 @@ export default new Vuex.Store({
 
     portPos: (state, getters) => (nodeId, portName, isInput) => {
       const node = getters.nodeById(nodeId)
-      const port = node[isInput ? 'in' : 'out'][portName]
+      const port = node.out[portName] || node.in[portName]
+      if(!port) {
+        throw new Error(`No port found ${nodeId}.${portName}`)
+      }
 
       if(!port.relativePos) {
         return [node.pos[0], node.pos[1]]
@@ -123,6 +126,7 @@ export default new Vuex.Store({
     },
 
     'node:clean': (state, id) => state.nodes[id].display.dirty = false,
+    'node:soil': (state, id) => state.nodes[id].display.dirty = true,
 
     'node:disconnect': (state, edges) => edges.forEach((e) => Vue.delete(state.edges, e)),
     'node:deleteSelected': (state, nodeIds) => nodeIds.forEach((id) => Vue.delete(state.nodes, id)),

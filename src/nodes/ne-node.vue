@@ -6,7 +6,7 @@
     }"
     @mousedown="$store.commit('node:select', node.id)">
     <div class="header">{{node.name}}</div>
-    <node-ports :ports="inputs"
+    <node-ports :ports="inputs" :node-id="node.id"
       :incoming="connectedInputs"
       @connect="(port) => $store.commit('cmd:edge:create', {node: node.id, port, type: 'to'})"
       @disconnect="(port) => $store.commit('edge:disconnect', {node: node.id, port})"
@@ -19,7 +19,7 @@
         v-on="events"/>
     </div>
 
-    <node-ports :ports="outputs" out
+    <node-ports :ports="outputs" :node-id="node.id" out
       @connect="(port) => $store.commit('cmd:edge:create', {node: node.id, port, type: 'from'})"
       @mouseover="() => stopDragging = false" @mouseleave="() => stopDragging = true" />
   </div>

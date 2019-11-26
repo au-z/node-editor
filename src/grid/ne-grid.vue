@@ -1,12 +1,13 @@
 <template>
   <div class="ne-grid">
-    <canvas ref="canvas" v-keybind="keybind" @click="() => $store.commit('node:selectAll', false)"></canvas>
+    <canvas id="grid-canvas" ref="canvas" v-keybind="keybind" @click="() => $store.commit('node:selectAll', false)"></canvas>
     <slot></slot>
   </div>
 </template>
 
 <script>
 import Canvas from './Canvas.js'
+import Cable from './canvas/Cable.ts'
 import Keybind from '../directives/v-keybind.ts'
 
 export default {
@@ -36,8 +37,7 @@ export default {
     },
   },
   methods: {
-    redraw() {
-      this.canvas.wipe()
+    drawEdges(ctx) {
       this.$store.getters.nodes.forEach((nodeTo) => {
         const edges = Object.values(nodeTo.in).map((port) => {
           const edge = this.$store.getters.edge(nodeTo.id, port.name)
@@ -47,7 +47,8 @@ export default {
           }
         }).filter(({from, to}) => !!from)
 
-        edges.forEach(({from, to}) => this.canvas.bezier(from, to))
+        const cables = edges.map(({from, to}) => Cable(from, to, '#aaa'))
+        cables.forEach((c) => c.draw(ctx))
       })
     },
   },
@@ -55,14 +56,7 @@ export default {
     this.canvas = Canvas.getInstance(this.$refs.canvas)
     this.canvas.prepare()
 
-    this.$watch('dirtyNodes', (nodes) => {
-      nodes.forEach((n) => this.$store.commit('node:clean', n.id))
-      this.redraw()
-    })
-    window.addEventListener('resize', this.redraw)
-  },
-  updated() {
-    this.redraw()
+    this.canvas.onRender((ctx) => this.drawEdges(ctx))
   },
 }
 </script>
