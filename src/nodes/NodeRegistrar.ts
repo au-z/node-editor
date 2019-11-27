@@ -17,6 +17,7 @@ export default function NodeRegistrar(store: any) {
     {type: 'logic', name: 'NAND', node: require('./logic/node-logical-nand.vue').default},
     {type: 'logic', name: 'OR', node: require('./logic/node-logical-or.vue').default},
     {type: 'logic', name: 'XOR', node: require('./logic/node-logical-xor.vue').default},
+    {type: 'logic', name: 'Output', node: require('./logic/node-logical-out.vue').default},
 
     {type: 'image', name: 'Preview', node: require('./image/img-preview').default},
     {type: 'image', name: 'Filter', node: require('./image/img-filter').default},

@@ -25,6 +25,8 @@ export default function usePorts(ctx, nodeId: string) {
     if(port.value != null) {
       const inputType = mapToType(port.type)
       acc[port.name] = tryConvert(port.value, port.type, inputType)
+    } else {
+      acc[port.name] = port.default
     }
     return acc
   }, {}))
@@ -83,7 +85,6 @@ export default function usePorts(ctx, nodeId: string) {
   }
 
   watch(outputBindings, (bindings) => Object.entries(bindings).forEach(([port, binding]) => {
-    console.log(port, binding)
     rNode.value.out[port] && store.commit('port:set', {
       id: rNode.value.id,
       port,

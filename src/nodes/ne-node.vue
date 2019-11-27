@@ -16,7 +16,7 @@
       <component :is="node.type" :node="node"
         v-bind="inputBindings"
         v-model="outputBindings"
-        v-on="events"/>
+        v-on="{initInputs, initOutputs}"/>
     </div>
 
     <node-ports :ports="outputs" :node-id="node.id" out
@@ -40,12 +40,12 @@ export default {
     },
   },
   data: (vm) => ({
-    events: {
-      initInputs: (ports) => vm.$store.commit('node:initInputPorts', {id: vm.node.id, ports}),
-      initOutputs: (ports) => vm.$store.commit('node:initOutputPorts', {id: vm.node.id, ports}),
-    },
     stopDragging: false,
   }),
+  methods: {
+    initInputs(ports) {this.$store.commit('node:initInputPorts', {id: this.node.id, ports})},
+    initOutputs(ports) {this.$store.commit('node:initOutputPorts', {id: this.node.id, ports})},
+  },
   setup(props, ctx) {
     const {rNode, onPositionChange, deleteNode} = useNode(ctx, props.id)
     const {inputs, inputBindings, outputBindings, outputs, connectedInputs} = usePorts(ctx, rNode.value.id)
