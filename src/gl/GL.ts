@@ -1,8 +1,8 @@
-import Vue from 'vue'
 import * as THREE from 'three'
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js'
 import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass.js'
+import PostProcessor from './postprocessing/PostProcessor.ts'
 
 export default (() => {
   let context: any
@@ -50,7 +50,16 @@ export default (() => {
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.enabled = false
 
-    context = {camera, scene, light, renderer, controls, composer, resize}
+    context = {
+      camera,
+      scene,
+      light,
+      postProcessor: new PostProcessor(composer),
+      renderer,
+      controls,
+      composer,
+      resize,
+    }
 
     animate()
     return context

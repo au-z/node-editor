@@ -1,7 +1,7 @@
 import {ShaderMaterial, UniformsUtils} from 'three/build/three.module.js'
 import {Pass} from 'three/examples/jsm/postprocessing/Pass.js'
 
-const CustomPass = function(shader, meta) {
+function CustomPass(shader, meta) {
   Pass.call(this)
 
   this.meta = meta
