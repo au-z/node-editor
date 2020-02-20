@@ -60,7 +60,7 @@ export default function PortBinding(options: BindingOptions) {
 		}
 	})
 
-	function created() {
+	function mounted() {
 		if(options.outputs) {
 			if(Object.values(options.outputs).every((config) => !config.binding) && options.inputs) {
 				Object.entries(options.inputs).forEach(([name, config]) => {
@@ -91,6 +91,6 @@ export default function PortBinding(options: BindingOptions) {
 			outputs,
 		}),
 		props,
-		created,
+		mounted,
 	}
 }

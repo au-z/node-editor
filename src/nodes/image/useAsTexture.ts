@@ -28,9 +28,6 @@ export default function useAsTexture(ctx, props) {
 
   watch(url, (url) => {
     const texture = new THREE.TextureLoader().load(url, onTextureLoad)
-    // texture.generateMipmaps = false
-    // // texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping
-    // texture.minFilter = THREE.LinearFilter
     material.map = texture
   })
 

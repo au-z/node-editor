@@ -51,9 +51,10 @@ export default {
     node() {return this.$store.getters.nodeById(this.nodeId)},
   },
   methods: {
-    connect(port) {
+    connect(port, dragging) {
       if (this.incoming[port]) {
         this.$emit('disconnect', port)
+        dragging && this.$emit('connect', port)
       } else {
         this.$emit('connect', port)
       }

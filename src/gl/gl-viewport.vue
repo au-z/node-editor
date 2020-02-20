@@ -10,7 +10,7 @@
         <li @click="hide" title="Close Window"><i class="fas fa-times"></i></li>
       </ul>
     </div>
-    <div class="container" @mouseover="toggleDrag(false)" @mouseleave="toggleDrag(true)" ref="container"></div>
+    <div id="gl-viewport" class="container" @mouseover="toggleDrag(false)" @mouseleave="toggleDrag(true)"></div>
   </div>
 </template>
 
@@ -39,7 +39,7 @@ export default {
     },
   },
   mounted() {
-    this.gl = GL.useContext(this.$refs.container)
+    this.gl = GL.useContext('gl-viewport')
     this.$watch('ui', (ui) => {
       if(!this.gl || !ui.width || !ui.height) return
       this.gl.resize(ui.width, ui.height)

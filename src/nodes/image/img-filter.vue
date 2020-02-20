@@ -1,7 +1,7 @@
 <template>
   <div class="img-filter" v-preserve="form">
     <div class="header">
-      <i class="fas fa-redo" @click="refreshFilter"></i>
+      <!-- <i class="fas fa-redo" @click="refreshFilter"></i> -->
     </div>
     <select v-model="filter" v-preserve="filter">
       <option value="PASS-THROUGH">Pass Through</option>
@@ -24,29 +24,29 @@ export default {
   directives: {Preserve},
   mixins: [PortBinding({
     inputs: {
-      img: {type: 'blob', default: new Blob()},
+      input: {type: 'array', default: []},
     },
     outputs: {
-      img: {type: 'blob', value: new Blob(), binding: 'img'},
+      output: {type: 'array', value: [], binding: 'filterArray'},
     },
   })],
   data: () => ({
     form: {},
   }),
-  methods: {
-    toggleChange() {
-      console.log(this.uniforms)
+  computed: {
+    filterArray() {
+      return this.filter === 'PASS-THROUGH' ? [...this.input] : [...this.input, this.passId]
     },
   },
   setup(props, ctx) {
-    const {filter, uniforms, refreshFilter} = useGlFilter(ctx, props)
+    const {filter, uniforms, passId} = useGlFilter(ctx, props)
     const {nodeState} = useLocalStorage.getInstance(ctx)
 
     return {
       filter,
       uniforms,
-      refreshFilter,
       nodeState,
+      passId,
     }
   },
   created() {

@@ -14,22 +14,28 @@ import PortBinding from '../PortBinding.ts'
 import Preserve from '../../directives/v-preserve.ts'
 import useLocalStorage from '../../storage/useLocalStorage'
 
-import useImageLoader from './useImageLoader'
+import useImageLoader from 'src/nodes/image/useImageLoader.ts'
 
 export default {
   name: 'gl-image',
   directives: {Preserve},
   mixins: [PortBinding({
-    outputs: {img: {type: 'blob', binding: 'blob'}},
+    outputs: {img: {type: 'array', binding: 'textureArray'}},
   })],
+  computed: {
+    textureArray() {
+      return this.texture ? [this.texture] : []
+    },
+  },
   setup(props, ctx) {
-    const {url, blob, img} = useImageLoader(ctx)
+    const {url, blob, img, texture} = useImageLoader(ctx).asTexture(512)
     const {nodeState} = useLocalStorage.getInstance(ctx)
 
     return {
       url,
       blob,
       img,
+      texture,
       nodeState,
     }
   },

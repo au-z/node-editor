@@ -1,26 +1,53 @@
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
 import { Pass } from 'three/examples/jsm/postprocessing/Pass'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
+import GL from 'src/gl/GL'
 
-interface RegisteredPass {
-  passId: string
-  pass: Pass
+interface IPostProcessor {
+  composer: any
+  createPass(pass: Pass)
+  updatePass(passId: string, pass: Pass)
+  removePass(passId: string)
+  passes: any[]
 }
 
-interface PostProcessorArguments {
-  composer: EffectComposer,
-  [prop: string]: any,
-}
-
-export default function PostProcessor() {
-  let instance
-  let composer: EffectComposer
+export default (function PostProcessor() {
+  const {scene, camera, renderer} = GL.useContext()
+  let instance: IPostProcessor
 
   const passes = [] as any[]
 
-  const registerPass = (pass: Pass) => {
+  const composer = (function() {
+    let instance: any
+    let value: EffectComposer
+
+    const init = () => {
+      value = new EffectComposer(renderer)
+      value.addPass(new RenderPass(scene, camera))
+
+      instance = {
+        value,
+        refresh: init
+      }
+
+      return instance
+    }
+
+    return {
+      getInstance: () => instance ? instance : init()
+    }
+  })()
+
+  const createPass = (pass: Pass) => {
     const passId = Math.random().toString(36).substr(2, 7)
     passes.push({passId, pass})
-    return
+    return passId
+  }
+
+  const updatePass = (passId: string, pass: Pass) => {
+    const existingPass = passes.find((p) => p.passId === passId)
+    if(!existingPass) return
+    existingPass.pass = pass
   }
 
   const removePass = (passId: string) => {
@@ -30,11 +57,11 @@ export default function PostProcessor() {
     return true
   }
 
-  const init = (composer: EffectComposer) => {
-    this.composer = composer
-
+  const init = () => {
     instance = {
-      registerPass,
+      composer: composer.getInstance(),
+      createPass,
+      updatePass,
       removePass,
       passes,
     }
@@ -42,5 +69,7 @@ export default function PostProcessor() {
     return instance
   }
 
-  return {getInstance: (...args: PostProcessorArguments) => instance ?  instance : init(...args)}
-}
+  return {
+    getInstance: (): IPostProcessor => instance ?  instance : init()
+  }
+})()

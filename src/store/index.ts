@@ -50,7 +50,7 @@ export default new Vuex.Store({
     },
     ui: {
       'gl-viewport': {
-        show: false,
+        show: true,
       },
     },
   },
@@ -65,7 +65,7 @@ export default new Vuex.Store({
       return (Object.values(node.in) as Port[]).map((port: Port) => {
         const from = getters.edge(id, port.name)
         if(from) {
-          return {...node.in[port.name], value: getters.nodeById(from.node).out[from.port].value}
+          return {...node.in[port.name], value: getters.nodeById(from.node)?.out[from.port]?.value}
         } else {
           return node.in[port.name]
         }

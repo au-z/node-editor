@@ -1,35 +1,38 @@
 <template>
   <div class="img-preview">
-    <div class="preview">
-      <img :src="url" style="backgroundColor: #000">
+    <div class="preview" style="backgroundColor: #000">
+      <img v-if="textureUrl" :src="textureUrl" style="backgroundColor: #000">
     </div>
   </div>
 </template>
 
 <script>
 import PortBinding from '../PortBinding.ts'
-import useAsTexture from './useAsTexture.ts'
+import usePostProcessing from './usePostProcessing.ts'
 
 export default {
   name: 'img-preview',
   mixins: [PortBinding({
-    inputs: {blob: {type: 'blob'}},
+    inputs: {passes: {type: 'array', default: []}},
   })],
-  data: () => ({
-    error: false,
-  }),
   computed: {
-    blobUrl() {
-      return URL.createObjectURL(this.img)
-    },
+    textureUrl() {return this.passes.length > 0 ? this.passes[0].image?.src : ''},
   },
   setup(props, ctx) {
-    const {aspectRatio, url} = useAsTexture(ctx, props)
+    const {applyTexture, applyFilters} = usePostProcessing(ctx, props)
 
     return {
-      aspectRatio,
-      url,
+      applyTexture,
+      applyFilters,
     }
+  },
+  created() {
+    this.$watch('passes', ([texture, ...filters]) => {
+      if(texture === 0) return
+      this.applyTexture(texture)
+      if(filters.length > 0) return
+      this.applyFilters(filters)
+    }, {immediate: true, deep: true})
   },
 }
 </script>
