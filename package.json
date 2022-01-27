@@ -55,7 +55,7 @@
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
     "svg-tools": "^1.0.0",
-    "three": "^0.125.0",
+    "three": "^0.137.0",
     "ts-jest": "^24.1.0",
     "typescript": "^3.7.2",
     "url-loader": "^2.1.0",
